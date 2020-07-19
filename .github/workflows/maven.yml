@@ -1,6 +1,13 @@
 name: CI
 
-on: [push, pull_request]
+on:
+  # На любой PR и на все коммиты в master
+  pull_request:
+    branches:
+      - '*'
+  push:
+    branches:
+      - 'master'
 
 jobs:
   build:
@@ -12,7 +19,7 @@ jobs:
       with:
         java-version: 11
     - name: Build with Maven
-      run: mvn -B package --file pom.xml
+      run: mvn -B clean package --file pom.xml
 
   tags:
     needs: [build]
@@ -31,10 +38,14 @@ jobs:
     needs: [build]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Set up JDK 11
+      - uses: actions/checkout@v1
+      - name: Set up JDK
         uses: actions/setup-java@v1
         with:
-          java-version: 11
-      - name: SonarCloud Scan
-        run: mvn -f pom.xml verify sonar:sonar
+          java-version: 1.11
+      - name: Analyze with SonarCloud
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        # Запускаем сборку Sonar
+        run: mvn -B verify sonar:sonar -Dsonar.projectKey=MoneyKeeper -Dsonar.organization=alnatdev -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=$SONAR_TOKEN

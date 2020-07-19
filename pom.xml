@@ -20,13 +20,6 @@
 
 	<properties>
 		<java.version>11</java.version>
-
-		<!-- Данные для SonarCloud -->
-		<sonar.projectKey>MoneyKeeper</sonar.projectKey>
-		<sonar.organization>alnatdev</sonar.organization>
-		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
-		<!--suppress UnresolvedMavenProperty -->
-		<sonar.login>${{ secrets.SONAR_TOKEN }}</sonar.login>
 	</properties>
 
 	<dependencies>
