@@ -38,3 +38,5 @@ $BODY$
     LANGUAGE plpgsql;
 ALTER FUNCTION public.account_balance() OWNER TO moneykeeper;
 
+
+

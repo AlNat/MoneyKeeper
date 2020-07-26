@@ -1,8 +1,6 @@
-
 INSERT INTO account(description, name, type)
 VALUES ('Наличная валюта в кошельке', 'Кошелек', 0),
        ('Банковская карта ООО Банк', 'Карта', 1);
-
 
 INSERT INTO category(description, name)
 VALUES ('Тестовая категория', 'Категория');
