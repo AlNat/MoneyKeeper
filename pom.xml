@@ -55,6 +55,12 @@
 			<artifactId>springdoc-openapi-ui</artifactId>
 			<version>1.4.3</version>
 		</dependency>
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-security</artifactId>
+			<version>1.4.3</version>
+		</dependency>
+
 
 		<dependency>
 			<groupId>org.postgresql</groupId>
@@ -66,6 +72,8 @@
 			<artifactId>spring-boot-starter-tomcat</artifactId>
 			<scope>provided</scope>
 		</dependency>
+
+		<!-- Тесты -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
