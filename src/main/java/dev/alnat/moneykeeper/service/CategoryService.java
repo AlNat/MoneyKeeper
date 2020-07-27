@@ -10,6 +10,8 @@ import java.util.List;
  */
 public interface CategoryService {
 
+    Category get(Integer categoryID);
+
     void create(Category category);
 
     void delete(Category category);

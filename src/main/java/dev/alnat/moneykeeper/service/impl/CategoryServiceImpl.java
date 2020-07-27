@@ -28,6 +28,11 @@ public class CategoryServiceImpl implements CategoryService {
 
 
     @Override
+    public Category get(Integer categoryID) {
+        return categoryRepository.findById(categoryID).get(); // TODO Обработка специализированным Exception про NotFound
+    }
+
+    @Override
     public void create(Category category) {
         categoryRepository.save(category);
     }

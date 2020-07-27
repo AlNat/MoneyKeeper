@@ -12,9 +12,13 @@ import java.util.List;
  */
 public interface TransactionService {
 
-    // TODO Add
+    Transaction get(Integer transactionID);
 
-    // TODO Drop
+    void create(Transaction transaction);
+
+    void delete(Transaction transaction);
+
+    void delete(Integer transactionID);
 
     /**
      * Поиск списка транзакций по аккаунту
@@ -30,5 +34,7 @@ public interface TransactionService {
      * @return список транзакций
      */
     List<Transaction> getTransactionByFilter(TransactionSearchFilter filter);
+
+    List<Transaction> getAllTransaction();
 
 }

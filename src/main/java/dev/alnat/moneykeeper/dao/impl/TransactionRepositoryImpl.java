@@ -9,11 +9,11 @@ import dev.alnat.moneykeeper.model.Transaction;
 import dev.alnat.moneykeeper.model.enums.TransactionStatusEnum;
 import dev.alnat.moneykeeper.model.enums.TransactionTypeEnum;
 import dev.alnat.moneykeeper.util.StringUtil;
-import org.hibernate.SessionFactory;
 import org.hibernate.annotations.QueryHints;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -46,7 +46,11 @@ public class TransactionRepositoryImpl implements TransactionRepository {
 
     @Override
     public void delete(Integer transactionID) {
-        delete(getByID(transactionID));
+        entityManager
+                .createQuery("DELETE FROM Transaction WHERE transactionID = :id")
+                .setParameter("id", transactionID)
+                .setHint(QueryHints.READ_ONLY, true)
+                .executeUpdate();
     }
 
     @Override
@@ -54,18 +58,18 @@ public class TransactionRepositoryImpl implements TransactionRepository {
         return entityManager.find(Transaction.class, transactionID);
     }
 
-    @PostConstruct
     @Override
     public List<Transaction> getAll() {
         return entityManager
-                .createQuery("FROM Transaction", Transaction.class)
+                .createQuery("SELECT t FROM Transaction t", Transaction.class)
+                .setHint(QueryHints.READ_ONLY, true)
                 .getResultList();
     }
 
     @Override
     public List<Transaction> getTransactionsByAccount(Account account) {
         return entityManager
-                .createQuery("FROM Transaction t WHERE t.account = :account", Transaction.class)
+                .createQuery("SELECT t FROM Transaction t WHERE t.account = :account", Transaction.class)
                 .setParameter("account", account)
                 .setHint(QueryHints.READ_ONLY, true)
                 .getResultList();

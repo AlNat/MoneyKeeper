@@ -7,6 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 /**
  * Created by @author AlNat on 26.07.2020.
@@ -23,6 +26,11 @@ public class AccountServiceImpl implements AccountService {
         this.accountRepository = accountRepository;
     }
 
+
+    @Override
+    public Account get(Integer accountID) {
+        return accountRepository.findById(accountID).get(); // TODO Обработка специализированным Exception про NotFound
+    }
 
     @Override
     public void create(Account account) {
@@ -42,6 +50,13 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public Account getAccountByName(String name) {
         return accountRepository.getAccountByName(name);
+    }
+
+    @Override
+    public List<Account> getAccountList() {
+        return StreamSupport
+                .stream(accountRepository.findAll().spliterator(), false)
+                .collect(Collectors.toList());
     }
 
 }

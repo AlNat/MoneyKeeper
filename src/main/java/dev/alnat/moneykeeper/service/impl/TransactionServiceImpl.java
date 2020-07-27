@@ -26,8 +26,31 @@ public class TransactionServiceImpl implements TransactionService {
         this.transactionRepository = transactionRepository;
     }
 
-    // TODO Add
-    // TODO Drop
+
+    @Override
+    public void create(Transaction transaction) {
+        transactionRepository.create(transaction);
+    }
+
+    @Override
+    public Transaction get(Integer transactionID) {
+        return transactionRepository.getByID(transactionID);  // TODO Обработка специализированным Exception про NotFound
+    }
+
+    @Override
+    public void delete(Integer id) {
+        transactionRepository.delete(id);
+    }
+
+    @Override
+    public void delete(Transaction transaction) {
+        transactionRepository.delete(transaction);
+    }
+
+    @Override
+    public List<Transaction> getAllTransaction() {
+        return transactionRepository.getAll();
+    }
 
     @Override
     public List<Transaction> getTransactionsByAccount(Account account) {
