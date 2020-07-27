@@ -28,6 +28,13 @@ public interface TransactionService {
     List<Transaction> getTransactionsByAccount(Account account);
 
     /**
+     * Поиск списка транзакций по аккаунту
+     * @param accountName имя аккаунта
+     * @return список транзакций
+     */
+    List<Transaction> getTransactionsByAccountName(String accountName);
+
+    /**
      * Метод получения списка транзакций по фильтру поиска
      *
      * @param filter фильтр поиска

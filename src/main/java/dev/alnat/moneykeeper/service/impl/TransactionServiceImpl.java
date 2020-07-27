@@ -1,5 +1,6 @@
 package dev.alnat.moneykeeper.service.impl;
 
+import dev.alnat.moneykeeper.dao.AccountRepository;
 import dev.alnat.moneykeeper.dao.TransactionRepository;
 import dev.alnat.moneykeeper.dto.filter.TransactionSearchFilter;
 import dev.alnat.moneykeeper.model.Account;
@@ -21,9 +22,13 @@ public class TransactionServiceImpl implements TransactionService {
 
     private final TransactionRepository transactionRepository;
 
+    private final AccountRepository accountRepository;
+
     @Autowired
-    public TransactionServiceImpl(TransactionRepository transactionRepository) {
+    public TransactionServiceImpl(TransactionRepository transactionRepository,
+                                  AccountRepository accountRepository) {
         this.transactionRepository = transactionRepository;
+        this.accountRepository = accountRepository;
     }
 
 
@@ -50,6 +55,17 @@ public class TransactionServiceImpl implements TransactionService {
     @Override
     public List<Transaction> getAllTransaction() {
         return transactionRepository.getAll();
+    }
+
+    @Override
+    public List<Transaction> getTransactionsByAccountName(String accountName) {
+        Account account = accountRepository.getAccountByName(accountName);
+
+        if (account == null) {
+            // TODO Обработка специализированным Exception про NotFound
+        }
+
+        return transactionRepository.getTransactionsByAccount(account);
     }
 
     @Override

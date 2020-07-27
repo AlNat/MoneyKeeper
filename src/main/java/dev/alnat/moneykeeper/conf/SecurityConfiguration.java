@@ -18,7 +18,7 @@ import java.time.format.DateTimeFormatter;
 /**
  * Аутентификация для всех запросов
  *
- * TODO Сформировать корректный Secuity!
+ * TODO Сформировать корректный Security!
  *
  * Created by @author AlNat on 20.07.2020.
  * Licensed by Apache License, Version 2.0
@@ -33,6 +33,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
+                .csrf().disable()
                 .authorizeRequests()
                     .antMatchers("/**").permitAll();
     }
