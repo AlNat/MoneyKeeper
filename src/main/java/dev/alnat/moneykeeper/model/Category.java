@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import dev.alnat.moneykeeper.model.abstracts.CreatedUpdated;
+import io.swagger.v3.oas.annotations.media.Schema;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
@@ -25,6 +26,7 @@ import java.util.Objects;
 @Table(name = "category")
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "categoryID", scope = Category.class)
+@Schema(description = "Категория покупки")
 public class Category extends CreatedUpdated implements Serializable {
 
     private static final long serialVersionUID = 5521315512322L;
@@ -35,23 +37,28 @@ public class Category extends CreatedUpdated implements Serializable {
 
     @Column(nullable = false, unique = true)
     @NotNull
+    @Schema(description = "Имя категории")
     private String name;
 
     @Column
+    @Schema(description = "Описание категории")
     private String description;
 
     @JacksonXmlElementWrapper(localName = "categoryList")
     @JacksonXmlProperty(localName = "category")
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "category", cascade = CascadeType.ALL)
     @Fetch(FetchMode.SELECT)
+    @Schema(description = "Список покупок с этой категорией")
     private List<Transaction> transactionList;
 
     @ManyToOne
     @JsonIgnore
     @JoinColumn(name = "parentcategory_id", nullable = true)
+    @Schema(description = "Вышестоящая категория")
     private Category parentCategory;
 
     @OneToMany(mappedBy = "parentCategory", fetch = FetchType.EAGER)
+    @Schema(description = "Список под-категорий")
     private List<Category> subCategoryList;
 
 

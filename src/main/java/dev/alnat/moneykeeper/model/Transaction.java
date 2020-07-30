@@ -11,6 +11,7 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import dev.alnat.moneykeeper.model.abstracts.CreatedUpdated;
 import dev.alnat.moneykeeper.model.enums.TransactionStatusEnum;
 import dev.alnat.moneykeeper.model.enums.TransactionTypeEnum;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -26,6 +27,7 @@ import java.util.Objects;
 @Table(name = "transaction")
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "transactionID", scope = Transaction.class)
+@Schema(description = "Проводка (покупка или пополнение)")
 public class Transaction extends CreatedUpdated implements Serializable {
 
     private static final long serialVersionUID = 4311533553535L;
@@ -38,30 +40,37 @@ public class Transaction extends CreatedUpdated implements Serializable {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", shape = JsonFormat.Shape.STRING)
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @Schema(description = "Дата проведения")
     private LocalDateTime processDate;
 
     @Column(precision = 19, scale = 2, nullable = false)
+    @Schema(description = "Сумма")
     private BigDecimal amount;
 
     // TODO В таблицу-справочник
     @Column(nullable = false)
     @Enumerated(EnumType.ORDINAL)
+    @Schema(description = "Статус транзакции")
     private TransactionStatusEnum status;
 
     // TODO В таблицу-справочник
     @Column(nullable = false)
     @Enumerated(EnumType.ORDINAL)
+    @Schema(description = "Тип проводки")
     private TransactionTypeEnum type;
 
     @Column
+    @Schema(description = "Комментарий по транзакции")
     private String comment;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "categoryID", nullable = true, foreignKey = @ForeignKey(name = "transaction_categoryid_fkey"))
+    @Schema(description = "Категория покупки")
     private Category category;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "accountID", nullable = false, foreignKey = @ForeignKey(name = "transaction_accountid_fkey"))
+    @Schema(description = "Счет проводки")
     private Account account;
 
 

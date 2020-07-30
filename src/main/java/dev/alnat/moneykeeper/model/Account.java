@@ -7,6 +7,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import dev.alnat.moneykeeper.model.abstracts.CreatedUpdated;
 import dev.alnat.moneykeeper.model.enums.AccountTypeEnum;
+import io.swagger.v3.oas.annotations.media.Schema;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.Formula;
@@ -27,32 +28,39 @@ import java.util.Objects;
 @Table(name = "account")
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "accountID", scope = Account.class)
+@Schema(description = "Описание счета")
 public class Account extends CreatedUpdated implements Serializable {
 
     private static final long serialVersionUID = 251152522L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Schema(description = "Идентификатор счета в БД")
     private Integer accountID;
 
     @Column(nullable = false, unique = true)
     @NotNull
+    @Schema(description = "Имя счета")
     private String name;
 
     @Column
+    @Schema(description = "Описание")
     private String description;
 
     @Formula("(SELECT COALESCE(sum(t.amount), 0) FROM transaction as t WHERE t.status = 0 AND t.accountID = accountID)")
+    @Schema(description = "Текущий баланс счета")
     private BigDecimal balance;
 
     @Column(nullable = false)
     @Enumerated(EnumType.ORDINAL)
+    @Schema(description = "Тип счета")
     private AccountTypeEnum type;
 
     @JacksonXmlElementWrapper(localName = "accountList")
     @JacksonXmlProperty(localName = "account")
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "account", cascade = CascadeType.ALL)
     @Fetch(FetchMode.SELECT)
+    @Schema(description = "Список проводок по счету")
     private List<Transaction> transactionList;
 
 

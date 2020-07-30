@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +19,8 @@ import java.util.List;
  * Created by @author AlNat on 26.07.2020.
  * Licensed by Apache License, Version 2.0
  */
+@Tag(name = "Account API",
+        description = "REST API для взаимодействия со счетами")
 @RestController
 @RequestMapping(value = "/api/account", produces = {"application/json", "application/xml"})
 public class AccountController {

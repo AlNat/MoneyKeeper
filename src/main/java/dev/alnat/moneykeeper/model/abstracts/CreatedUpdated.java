@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
@@ -23,18 +24,18 @@ import java.time.LocalDateTime;
 @MappedSuperclass
 public abstract class CreatedUpdated implements Serializable {
 
-    // TODO Swagger
     @Column
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS", shape = JsonFormat.Shape.STRING)
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @Schema(description = "Дата создания записи")
     protected LocalDateTime created;
 
-    // TODO Swagger
     @Column
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS", shape = JsonFormat.Shape.STRING)
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @Schema(description = "Дата обновления записи")
     protected LocalDateTime updated;
 
 
