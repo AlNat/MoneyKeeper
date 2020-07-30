@@ -2,6 +2,8 @@ package dev.alnat.moneykeeper.controller.api;
 
 import dev.alnat.moneykeeper.dto.filter.TransactionSearchFilter;
 import dev.alnat.moneykeeper.model.Transaction;
+import dev.alnat.moneykeeper.model.enums.TransactionStatusEnum;
+import dev.alnat.moneykeeper.model.enums.TransactionTypeEnum;
 import dev.alnat.moneykeeper.service.TransactionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -9,15 +11,19 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
  * Created by @author AlNat on 26.07.2020.
  * Licensed by Apache License, Version 2.0
  */
+@SuppressWarnings("DefaultAnnotationParam")
 @RestController
 @RequestMapping(value = "/api/transaction", produces = {"application/json", "application/xml"})
 public class TransactionController {
@@ -81,7 +87,7 @@ public class TransactionController {
 
     @Operation(summary = "Создание новой транзакции")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Запрос успешно выполнен"),
+            @ApiResponse(responseCode = "201", description = "Транзакция успешно создана"),
             @ApiResponse(responseCode = "400", description = "Ошибка в запросе"),
             @ApiResponse(responseCode = "401", description = "Запрос не авторизован"),
             @ApiResponse(responseCode = "403", description = "Недостаточно прав для запроса"),
@@ -94,6 +100,43 @@ public class TransactionController {
             @RequestBody
                     Transaction transaction) {
         transactionService.create(transaction);
+    }
+
+
+    @Operation(summary = "Создание новой транзакции по параметрам")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Транзакция успешно создана"),
+            @ApiResponse(responseCode = "400", description = "Ошибка в запросе"),
+            @ApiResponse(responseCode = "401", description = "Запрос не авторизован"),
+            @ApiResponse(responseCode = "403", description = "Недостаточно прав для запроса"),
+            @ApiResponse(responseCode = "500", description = "Ошибка при обработки запроса")
+    })
+    @ResponseStatus(HttpStatus.CREATED)
+    @RequestMapping(value = "/custom", method = RequestMethod.POST)
+    public void addTransaction(
+            @Parameter(description = "Дата проведения", required = false, example = "2020-01-01 12:00:00")
+            @RequestParam
+            @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:SS")
+                    LocalDateTime processDate,
+            @Parameter(description = "Сумма операции", required = true, example = "100.00")
+            @RequestParam
+                BigDecimal amount,
+            @Parameter(description = "Статус операции", required = false, example = "CONFORMED")
+            @RequestParam
+                TransactionStatusEnum status,
+            @Parameter(description = "Тип операции", required = true, example = "SUBTRACTION")
+            @RequestParam
+                TransactionTypeEnum type,
+            @Parameter(description = "Комментарий", required = false, example = "Тестовая покупка")
+            @RequestParam
+                String comment,
+            @Parameter(description = "Имя категории", required = true, example = "TEST")
+            @RequestParam
+                String categoryName,
+            @Parameter(description = "Имя счета", required = true, example = "TEST")
+            @RequestParam
+                String accountName) {
+        transactionService.create(processDate, amount, status, type, comment, categoryName, accountName);
     }
 
 

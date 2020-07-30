@@ -1,15 +1,21 @@
 package dev.alnat.moneykeeper.service.impl;
 
-import dev.alnat.moneykeeper.dao.AccountRepository;
 import dev.alnat.moneykeeper.dao.TransactionRepository;
 import dev.alnat.moneykeeper.dto.filter.TransactionSearchFilter;
 import dev.alnat.moneykeeper.model.Account;
+import dev.alnat.moneykeeper.model.Category;
 import dev.alnat.moneykeeper.model.Transaction;
+import dev.alnat.moneykeeper.model.enums.TransactionStatusEnum;
+import dev.alnat.moneykeeper.model.enums.TransactionTypeEnum;
+import dev.alnat.moneykeeper.service.AccountService;
+import dev.alnat.moneykeeper.service.CategoryService;
 import dev.alnat.moneykeeper.service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -22,18 +28,46 @@ public class TransactionServiceImpl implements TransactionService {
 
     private final TransactionRepository transactionRepository;
 
-    private final AccountRepository accountRepository;
+    private final AccountService accountService;
+
+    private final CategoryService categoryService;
 
     @Autowired
     public TransactionServiceImpl(TransactionRepository transactionRepository,
-                                  AccountRepository accountRepository) {
+                                  AccountService accountService,
+                                  CategoryService categoryService) {
         this.transactionRepository = transactionRepository;
-        this.accountRepository = accountRepository;
+        this.accountService = accountService;
+        this.categoryService = categoryService;
     }
 
 
     @Override
     public void create(Transaction transaction) {
+        transactionRepository.create(transaction);
+    }
+
+    @Override
+    public void create(LocalDateTime processDate, BigDecimal amount,
+                       TransactionStatusEnum status, TransactionTypeEnum type,
+                       String comment, String categoryName, String accountName) {
+        Account account = accountService.getAccountByName(accountName);
+        Category category = categoryService.getCategoryByName(categoryName);
+
+        if (type == TransactionTypeEnum.ADDITION) {
+            // TODO Проверка на неотрицательную сумму транзакции
+        } else if (type == TransactionTypeEnum.SUBTRACTION) {
+            // TODO Проверка на отрицательную сумму транзакции
+        }
+
+        Transaction transaction = new Transaction();
+        transaction.setAccount(account);
+        transaction.setCategory(category);
+        transaction.setComment(comment);
+        transaction.setStatus(status == null ? TransactionStatusEnum.CONFORMED : status);
+        transaction.setType(type);
+        transaction.setProcessDate(processDate == null ? LocalDateTime.now() : processDate);
+
         transactionRepository.create(transaction);
     }
 
@@ -59,7 +93,7 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     public List<Transaction> getTransactionsByAccountName(String accountName) {
-        Account account = accountRepository.getAccountByName(accountName);
+        Account account = accountService.getAccountByName(accountName);
 
         if (account == null) {
             // TODO Обработка специализированным Exception про NotFound

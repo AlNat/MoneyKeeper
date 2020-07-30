@@ -3,7 +3,11 @@ package dev.alnat.moneykeeper.service;
 import dev.alnat.moneykeeper.dto.filter.TransactionSearchFilter;
 import dev.alnat.moneykeeper.model.Account;
 import dev.alnat.moneykeeper.model.Transaction;
+import dev.alnat.moneykeeper.model.enums.TransactionStatusEnum;
+import dev.alnat.moneykeeper.model.enums.TransactionTypeEnum;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -15,6 +19,9 @@ public interface TransactionService {
     Transaction get(Integer transactionID);
 
     void create(Transaction transaction);
+
+    void create(LocalDateTime processDate, BigDecimal amount, TransactionStatusEnum status,
+                TransactionTypeEnum type, String comment, String categoryName, String accountName);
 
     void delete(Transaction transaction);
 

@@ -20,7 +20,7 @@ public class OpenAPIConfiguration {
                         .title("MoneyKeeper API")
                         .version("1")
                         .description("This is a simple MoneyKeeper software.")
-                        .license(new License().name("Apache 2.0").url("http://alnar.dev")));
+                        .license(new License().name("Apache 2.0").url("http://alnat.dev")));
     }
 
 

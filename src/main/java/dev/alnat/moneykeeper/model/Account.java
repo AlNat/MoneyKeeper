@@ -42,7 +42,7 @@ public class Account extends CreatedUpdated implements Serializable {
     @Column
     private String description;
 
-    @Formula("SELECT sum(t.amount) FROM transaction as t WHERE t.status = 0 AND t.accountID = accountID")
+    @Formula("(SELECT COALESCE(sum(t.amount), 0) FROM transaction as t WHERE t.status = 0 AND t.accountID = accountID)")
     private BigDecimal balance;
 
     @Column(nullable = false)

@@ -14,6 +14,8 @@ public interface CategoryService {
 
     void create(Category category);
 
+    void create(String name, String description, String parentCategoryName);
+
     void delete(Category category);
 
     void delete(Integer categoryID);

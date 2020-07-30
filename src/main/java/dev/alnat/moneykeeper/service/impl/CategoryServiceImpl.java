@@ -3,6 +3,7 @@ package dev.alnat.moneykeeper.service.impl;
 import dev.alnat.moneykeeper.dao.CategoryRepository;
 import dev.alnat.moneykeeper.model.Category;
 import dev.alnat.moneykeeper.service.CategoryService;
+import dev.alnat.moneykeeper.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -34,6 +35,20 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public void create(Category category) {
+        categoryRepository.save(category);
+    }
+
+    @Override
+    public void create(String name, String description, String parentCategoryName) {
+        Category category = new Category();
+        category.setName(name);
+        category.setDescription(description);
+
+        if (!StringUtil.isNullOrEmpty(parentCategoryName)) {
+            Category parentCategory = categoryRepository.getCategoryByName(parentCategoryName);
+            category.setParentCategory(parentCategory);
+        }
+
         categoryRepository.save(category);
     }
 

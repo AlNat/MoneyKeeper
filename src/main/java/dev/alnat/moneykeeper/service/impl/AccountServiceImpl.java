@@ -2,6 +2,7 @@ package dev.alnat.moneykeeper.service.impl;
 
 import dev.alnat.moneykeeper.dao.AccountRepository;
 import dev.alnat.moneykeeper.model.Account;
+import dev.alnat.moneykeeper.model.enums.AccountTypeEnum;
 import dev.alnat.moneykeeper.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,6 +35,15 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public void create(Account account) {
+        accountRepository.save(account);
+    }
+
+    public void create(String name, String description, AccountTypeEnum type) {
+        Account account = new Account();
+        account.setName(name);
+        account.setDescription(description);
+        account.setType(type);
+
         accountRepository.save(account);
     }
 
