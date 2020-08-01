@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -139,6 +140,11 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
+    public void update(Transaction transaction) {
+        transactionRepository.update(transaction);
+    }
+
+    @Override
     public Optional<Transaction> get(Integer transactionID) {
         return transactionRepository.getByID(transactionID);
     }
@@ -167,7 +173,34 @@ public class TransactionServiceImpl implements TransactionService {
             throw new MoneyKeeperNotFoundException("Нет счета с таким именем!");
         }
 
-        return transactionRepository.getTransactionsByAccount(account.get());
+        return getTransactionsByAccount(account.get());
+    }
+
+
+    @Override
+    public List<Transaction> getTransactionsByAccountName(String accountName, LocalDateTime from, LocalDateTime to)
+            throws MoneyKeeperException {
+        Optional<Account> account = accountService.getAccountByName(accountName);
+
+        if (account.isEmpty()) {
+            log.error("Ошибка при получении списка транзакций по счету {} - счета с таким именем нет!", account);
+            throw new MoneyKeeperNotFoundException("Нет счета с таким именем!");
+        }
+
+        return transactionRepository.getTransactionsByAccount(account.get(), from, to);
+    }
+
+
+    @Override
+    public List<Transaction> getTransactionsByAccountName(String accountName, LocalDate from, LocalDate to) throws MoneyKeeperException {
+        Optional<Account> account = accountService.getAccountByName(accountName);
+
+        if (account.isEmpty()) {
+            log.error("Ошибка при получении списка транзакций по счету {} - счета с таким именем нет!", account);
+            throw new MoneyKeeperNotFoundException("Нет счета с таким именем!");
+        }
+
+        return transactionRepository.getTransactionsByAccount(account.get(), from, to);
     }
 
     @Override

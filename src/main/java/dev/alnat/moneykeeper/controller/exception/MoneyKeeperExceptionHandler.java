@@ -53,7 +53,7 @@ public class MoneyKeeperExceptionHandler {
     }
 
 
-    // Ничего не возвращаем в целях безопасности - эти ошибки не перехвачены
+    // Ничего не возвращаем в целях безопасности - эти ошибки не перехвачены выше, а значит что-то совсем не то
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public void handleAllException(Exception e) {

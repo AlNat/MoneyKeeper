@@ -13,6 +13,7 @@ public class MoneyKeeperException extends Exception {
     public MoneyKeeperException(String message) {
         super(message);
     }
+
     public MoneyKeeperException(Throwable cause) {
         super(cause);
     }

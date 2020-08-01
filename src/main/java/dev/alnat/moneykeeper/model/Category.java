@@ -37,28 +37,28 @@ public class Category extends CreatedUpdated implements Serializable {
 
     @Column(nullable = false, unique = true)
     @NotNull
-    @Schema(description = "Имя категории")
+    @Schema(description = "Имя категории", required = true)
     private String name;
 
     @Column
-    @Schema(description = "Описание категории")
+    @Schema(description = "Описание категории", required = false)
     private String description;
 
     @JacksonXmlElementWrapper(localName = "categoryList")
     @JacksonXmlProperty(localName = "category")
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "category", cascade = CascadeType.ALL)
     @Fetch(FetchMode.SELECT)
-    @Schema(description = "Список покупок с этой категорией")
+    @Schema(description = "Список покупок с этой категорией", required = false)
     private List<Transaction> transactionList;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnore
     @JoinColumn(name = "parentcategory_id", nullable = true)
-    @Schema(description = "Вышестоящая категория")
+    @Schema(description = "Вышестоящая категория", required = false)
     private Category parentCategory;
 
     @OneToMany(mappedBy = "parentCategory", fetch = FetchType.EAGER)
-    @Schema(description = "Список под-категорий")
+    @Schema(description = "Список под-категорий", required = false)
     private List<Category> subCategoryList;
 
 

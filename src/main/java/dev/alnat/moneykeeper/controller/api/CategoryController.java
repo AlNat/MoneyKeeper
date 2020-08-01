@@ -67,6 +67,23 @@ public class CategoryController {
     }
 
 
+    @Operation(summary = "Обновление категории")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Категория успешно обновлена"),
+            @ApiResponse(responseCode = "400", description = "Ошибка в запросе"),
+            @ApiResponse(responseCode = "401", description = "Запрос не авторизован"),
+            @ApiResponse(responseCode = "403", description = "Недостаточно прав для запроса"),
+            @ApiResponse(responseCode = "500", description = "Ошибка при обработки запроса")
+    })
+    @ResponseStatus(HttpStatus.CREATED)
+    @RequestMapping(value = "/", method = RequestMethod.PUT)
+    public void updatedCategory(
+            @Parameter(description = "Измененная категория категория", required = true)
+            @RequestBody
+                    Category category) {
+        categoryService.create(category);
+    }
+
     @Operation(summary = "Создание новой категории")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Категория успешно создана"),

@@ -84,6 +84,24 @@ public class AccountController {
     }
 
 
+    @Operation(summary = "Обновление информации по счету")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Счет успешно обновлен"),
+            @ApiResponse(responseCode = "400", description = "Ошибка в запросе"),
+            @ApiResponse(responseCode = "401", description = "Запрос не авторизован"),
+            @ApiResponse(responseCode = "403", description = "Недостаточно прав для запроса"),
+            @ApiResponse(responseCode = "500", description = "Ошибка при обработки запроса")
+    })
+    @ResponseStatus(HttpStatus.CREATED)
+    @RequestMapping(value = "/", method = RequestMethod.PUT)
+    public void updatedAccount(
+            @Parameter(description = "Измененный счет", required = true)
+            @RequestBody
+                    Account account) {
+        accountService.update(account);
+    }
+
+
     @Operation(summary = "Создание нового счета")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Счет успешно создан"),

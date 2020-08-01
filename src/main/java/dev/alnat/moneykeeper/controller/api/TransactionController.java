@@ -9,6 +9,7 @@ import dev.alnat.moneykeeper.service.TransactionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -18,6 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -72,6 +74,61 @@ public class TransactionController {
     }
 
 
+    // Пришлось разнести по разным endpoint, т.к. народ со Spring-Doc не хочет чинить неработающую перегрузку
+    // https://github.com/springdoc/springdoc-openapi/issues/15
+    @Operation(summary = "Получение списка транзакции по счету")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Запрос успешно выполнен"),
+            @ApiResponse(responseCode = "400", description = "Ошибка в запросе", content = @Content),
+            @ApiResponse(responseCode = "401", description = "Запрос не авторизован", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Недостаточно прав для запроса", content = @Content),
+            @ApiResponse(responseCode = "500", description = "Ошибка при обработки запроса", content = @Content)
+    })
+    @RequestMapping(value = "/account/datetime", method = RequestMethod.GET, params = {"accountName", "from", "to"})
+    public List<Transaction> getTransactionList(
+            @Parameter(description = "Имя счета", required = true, example = "card")
+            @RequestParam
+                    String accountName,
+            @Parameter(description = "Дата и время начала выборки", required = true, example = "2020-01-01 00:00:01")
+            @RequestParam
+            @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:SS")
+                    LocalDateTime from,
+            @Parameter(description = "Дата и время завершения выборки", required = true, example = "2020-01-01 23:59:59")
+            @RequestParam
+            @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:SS")
+                    LocalDateTime to) throws MoneyKeeperException {
+        return transactionService.getTransactionsByAccountName(accountName, from, to);
+    }
+
+
+    // Пришлось разнести по разным endpoint, т.к. народ со Spring-Doc не хочет чинить неработающую перегрузку
+    // https://github.com/springdoc/springdoc-openapi/issues/15
+    @Operation(summary = "Получение списка транзакции по счету")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Запрос успешно выполнен"),
+            @ApiResponse(responseCode = "400", description = "Ошибка в запросе", content = @Content),
+            @ApiResponse(responseCode = "401", description = "Запрос не авторизован", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Недостаточно прав для запроса", content = @Content),
+            @ApiResponse(responseCode = "500", description = "Ошибка при обработки запроса", content = @Content)
+    })
+    @RequestMapping(value = "/account/date", method = RequestMethod.GET, params = {"accountName", "dateFrom", "dateTo"})
+    public List<Transaction> getTransactionList(
+            @Parameter(description = "Имя счета", required = true, example = "card")
+            @RequestParam
+                    String accountName,
+            @Parameter(description = "Дата начала выборки", required = true, example = "2020-01-01")
+            @RequestParam
+            @DateTimeFormat(pattern = "yyyy-MM-dd")
+                    LocalDate dateFrom,
+            @Parameter(description = "Дата завершения выборки", required = true, example = "2020-01-02",
+                    schema = @Schema)
+            @RequestParam
+            @DateTimeFormat(pattern = "yyyy-MM-dd")
+                    LocalDate dateTo) throws MoneyKeeperException {
+        return transactionService.getTransactionsByAccountName(accountName, dateFrom, dateTo);
+    }
+
+
     @Operation(summary = "Получение транзакции по идентификатору")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Запрос успешно выполнен"),
@@ -87,6 +144,24 @@ public class TransactionController {
             @PathVariable
                     Integer transactionID) {
         return transactionService.get(transactionID);
+    }
+
+
+    @Operation(summary = "Обновление транзакции")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Транзакция успешно обновлена"),
+            @ApiResponse(responseCode = "400", description = "Ошибка в запросе"),
+            @ApiResponse(responseCode = "401", description = "Запрос не авторизован"),
+            @ApiResponse(responseCode = "403", description = "Недостаточно прав для запроса"),
+            @ApiResponse(responseCode = "500", description = "Ошибка при обработки запроса")
+    })
+    @ResponseStatus(HttpStatus.CREATED)
+    @RequestMapping(value = "/", method = RequestMethod.PUT)
+    public void updateTransaction(
+            @Parameter(description = "Обновленная транзакция", required = true)
+            @RequestBody
+                    Transaction transaction) {
+        transactionService.update(transaction);
     }
 
 
@@ -119,7 +194,7 @@ public class TransactionController {
     @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(value = "/custom", method = RequestMethod.POST)
     public void addTransaction(
-            @Parameter(description = "Дата проведения", required = false, example = "2020-01-01 12:00:00")
+            @Parameter(description = "Дата и время проведения", required = false, example = "2020-01-01 12:00:00")
             @RequestParam
             @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:SS")
                     LocalDateTime processDate,

@@ -40,11 +40,11 @@ public class Account extends CreatedUpdated implements Serializable {
 
     @Column(nullable = false, unique = true)
     @NotNull
-    @Schema(description = "Имя счета")
+    @Schema(description = "Имя счета", required = true)
     private String name;
 
     @Column
-    @Schema(description = "Описание")
+    @Schema(description = "Описание", required = false)
     private String description;
 
     @Formula("(SELECT COALESCE(sum(t.amount), 0) FROM transaction as t WHERE t.status = 0 AND t.accountID = accountID)")
@@ -53,14 +53,14 @@ public class Account extends CreatedUpdated implements Serializable {
 
     @Column(nullable = false)
     @Enumerated(EnumType.ORDINAL)
-    @Schema(description = "Тип счета")
+    @Schema(description = "Тип счета", required = true)
     private AccountTypeEnum type;
 
     @JacksonXmlElementWrapper(localName = "accountList")
     @JacksonXmlProperty(localName = "account")
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "account", cascade = CascadeType.ALL)
     @Fetch(FetchMode.SELECT)
-    @Schema(description = "Список проводок по счету")
+    @Schema(description = "Список проводок по счету", required = false)
     private List<Transaction> transactionList;
 
 

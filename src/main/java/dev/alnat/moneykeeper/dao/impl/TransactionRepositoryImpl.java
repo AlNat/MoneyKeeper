@@ -15,6 +15,7 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +39,13 @@ public class TransactionRepositoryImpl implements TransactionRepository {
     @Override
     public void create(Transaction transaction) {
         entityManager.persist(transaction);
+    }
+
+    @Override
+    public void update(Transaction transaction) {
+        entityManager
+                .unwrap(Session.class)
+                .saveOrUpdate(transaction);
     }
 
     @Override
@@ -75,6 +83,33 @@ public class TransactionRepositoryImpl implements TransactionRepository {
                 .unwrap(Session.class)
                 .createQuery("FROM Transaction WHERE account = :account", Transaction.class)
                 .setParameter("account", account)
+                .setReadOnly(true)
+                .getResultList();
+    }
+
+
+    @Override
+    public List<Transaction> getTransactionsByAccount(Account account, LocalDate from, LocalDate to) {
+        return entityManager
+                .unwrap(Session.class)
+                .createQuery("FROM Transaction WHERE account = :account " +
+                        "AND processDate >= :from AND processDate <= :to", Transaction.class)
+                .setParameter("account", account)
+                .setParameter("from", from.atStartOfDay())
+                .setParameter("to", to.atStartOfDay().plusDays(1).minusNanos(1))
+                .setReadOnly(true)
+                .getResultList();
+    }
+
+    @Override
+    public List<Transaction> getTransactionsByAccount(Account account, LocalDateTime from, LocalDateTime to) {
+        return entityManager
+                .unwrap(Session.class)
+                .createQuery("FROM Transaction WHERE account = :account " +
+                        "AND processDate >= :from AND processDate <= :to", Transaction.class)
+                .setParameter("account", account)
+                .setParameter("from", from)
+                .setParameter("to", to)
                 .setReadOnly(true)
                 .getResultList();
     }
@@ -135,7 +170,9 @@ public class TransactionRepositoryImpl implements TransactionRepository {
         Order order;
         if (filter.getSortingList() != null && filter.getSortingList().size() > 0) {
             for (Sorting sorting : filter.getSortingList()) {
-                if (StringUtil.isNullOrEmpty(sorting.getSortBy()))  continue;
+                if (StringUtil.isNullOrEmpty(sorting.getSortBy())) {
+                    continue;
+                }
                 orderExpression = root.get(sorting.getSortBy());
 
                 if (sorting.getSortOrder() == null || sorting.getSortOrder() == Sorting.SortOrder.ASC) {
@@ -149,7 +186,7 @@ public class TransactionRepositoryImpl implements TransactionRepository {
         }
 
         criteriaQuery = criteriaQuery.where(criteriaBuilder.and( // Устанавливаем условия where
-                conditions.toArray(new Predicate[conditions.size()])
+                conditions.toArray(new Predicate[0])
                 )
         ).orderBy(orderList);
 

@@ -40,37 +40,37 @@ public class Transaction extends CreatedUpdated implements Serializable {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", shape = JsonFormat.Shape.STRING)
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-    @Schema(description = "Дата проведения")
+    @Schema(description = "Дата проведения", required = true, example = "2020-01-01 12:00:00", pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime processDate;
 
     @Column(precision = 19, scale = 2, nullable = false)
-    @Schema(description = "Сумма")
+    @Schema(description = "Сумма", required = true)
     private BigDecimal amount;
 
     // TODO В таблицу-справочник
     @Column(nullable = false)
     @Enumerated(EnumType.ORDINAL)
-    @Schema(description = "Статус транзакции")
+    @Schema(description = "Статус транзакции", required = true)
     private TransactionStatusEnum status;
 
     // TODO В таблицу-справочник
     @Column(nullable = false)
     @Enumerated(EnumType.ORDINAL)
-    @Schema(description = "Тип проводки")
+    @Schema(description = "Тип проводки", required = true)
     private TransactionTypeEnum type;
 
     @Column
-    @Schema(description = "Комментарий по транзакции")
+    @Schema(description = "Комментарий по транзакции", required = false)
     private String comment;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "categoryID", nullable = true, foreignKey = @ForeignKey(name = "transaction_categoryid_fkey"))
-    @Schema(description = "Категория покупки")
+    @Schema(description = "Категория покупки", required = false)
     private Category category;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "accountID", nullable = false, foreignKey = @ForeignKey(name = "transaction_accountid_fkey"))
-    @Schema(description = "Счет проводки")
+    @Schema(description = "Счет проводки", required = true)
     private Account account;
 
 

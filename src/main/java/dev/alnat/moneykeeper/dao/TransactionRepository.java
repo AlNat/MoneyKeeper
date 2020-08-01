@@ -4,6 +4,7 @@ import dev.alnat.moneykeeper.dto.filter.TransactionSearchFilter;
 import dev.alnat.moneykeeper.model.Account;
 import dev.alnat.moneykeeper.model.Transaction;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -15,6 +16,8 @@ import java.util.Optional;
 public interface TransactionRepository {
 
     void create(Transaction transaction);
+
+    void update(Transaction transaction);
 
     void delete(Transaction transaction);
 
@@ -31,6 +34,27 @@ public interface TransactionRepository {
      * @return список транзакций по нему
      */
     List<Transaction> getTransactionsByAccount(Account account);
+
+
+    /**
+     * Получение списка транзакций по аккаунту
+     *
+     * @param account аккаунт
+     * @param from дата начала выборки
+     * @param to дата окончания выборки
+     * @return список транзакций по нему
+     */
+    List<Transaction> getTransactionsByAccount(Account account, LocalDate from, LocalDate to);
+
+    /**
+     * Получение списка транзакций по аккаунту
+     *
+     * @param account аккаунт
+     * @param from дата начала выборки
+     * @param to дата окончания выборки
+     * @return список транзакций по нему
+     */
+    List<Transaction> getTransactionsByAccount(Account account, LocalDateTime from, LocalDateTime to);
 
     /**
      * Получения списка транзакций по фильтру поиска
