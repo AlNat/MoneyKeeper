@@ -9,7 +9,7 @@ import dev.alnat.moneykeeper.model.Transaction;
 import dev.alnat.moneykeeper.model.enums.TransactionStatusEnum;
 import dev.alnat.moneykeeper.model.enums.TransactionTypeEnum;
 import dev.alnat.moneykeeper.util.StringUtil;
-import org.hibernate.annotations.QueryHints;
+import org.hibernate.Session;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -18,6 +18,7 @@ import javax.persistence.criteria.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by @author AlNat on 26.07.2020.
@@ -47,31 +48,34 @@ public class TransactionRepositoryImpl implements TransactionRepository {
     @Override
     public void delete(Integer transactionID) {
         entityManager
-                .createQuery("DELETE FROM Transaction WHERE transactionID = :id")
+                .unwrap(Session.class)
+                .createQuery("DELETE Transaction WHERE transactionID = :id", Transaction.class)
                 .setParameter("id", transactionID)
-                .setHint(QueryHints.READ_ONLY, true)
                 .executeUpdate();
     }
 
     @Override
-    public Transaction getByID(Integer transactionID) {
-        return entityManager.find(Transaction.class, transactionID);
+    public Optional<Transaction> getByID(Integer transactionID) {
+        return Optional.ofNullable(entityManager.unwrap(Session.class) // Для получение Optional лучше брать сессию от Hibernate
+                .get(Transaction.class, transactionID));
     }
 
     @Override
     public List<Transaction> getAll() {
         return entityManager
-                .createQuery("SELECT t FROM Transaction t", Transaction.class)
-                .setHint(QueryHints.READ_ONLY, true)
+                .unwrap(Session.class)
+                .createQuery("FROM Transaction", Transaction.class)
+                .setReadOnly(true)
                 .getResultList();
     }
 
     @Override
     public List<Transaction> getTransactionsByAccount(Account account) {
         return entityManager
-                .createQuery("SELECT t FROM Transaction t WHERE t.account = :account", Transaction.class)
+                .unwrap(Session.class)
+                .createQuery("FROM Transaction WHERE account = :account", Transaction.class)
                 .setParameter("account", account)
-                .setHint(QueryHints.READ_ONLY, true)
+                .setReadOnly(true)
                 .getResultList();
     }
 
@@ -116,19 +120,19 @@ public class TransactionRepositoryImpl implements TransactionRepository {
 
         // Дата начала выборки
         if (filter.getFrom() != null) {
-            conditions.add(criteriaBuilder.greaterThanOrEqualTo(root.<LocalDateTime>get("processDate"), filter.getFrom()));
+            conditions.add(criteriaBuilder.greaterThanOrEqualTo(root.get("processDate"), filter.getFrom()));
         }
 
         // Дата окончания выборки
         if (filter.getTo() != null) {
-            conditions.add(criteriaBuilder.lessThanOrEqualTo(root.<LocalDateTime>get("processDate"), filter.getTo()));
+            conditions.add(criteriaBuilder.lessThanOrEqualTo(root.get("processDate"), filter.getTo()));
         }
 
 
         CriteriaQuery<Transaction> criteriaQuery = transactionCriteriaQuery.select(root); // Откуда выбирать данные
 
         Expression<?> orderExpression;
-        Order order = null;
+        Order order;
         if (filter.getSortingList() != null && filter.getSortingList().size() > 0) {
             for (Sorting sorting : filter.getSortingList()) {
                 if (StringUtil.isNullOrEmpty(sorting.getSortBy()))  continue;
@@ -149,7 +153,11 @@ public class TransactionRepositoryImpl implements TransactionRepository {
                 )
         ).orderBy(orderList);
 
-        return entityManager.createQuery(criteriaQuery).setHint(QueryHints.READ_ONLY, true).getResultList();
+        return entityManager
+                .unwrap(Session.class)
+                .createQuery(criteriaQuery)
+                .setReadOnly(true)
+                .getResultList();
     }
 
 }

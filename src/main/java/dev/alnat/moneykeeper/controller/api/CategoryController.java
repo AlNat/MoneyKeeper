@@ -1,5 +1,6 @@
 package dev.alnat.moneykeeper.controller.api;
 
+import dev.alnat.moneykeeper.exception.MoneyKeeperNotFoundException;
 import dev.alnat.moneykeeper.model.Category;
 import dev.alnat.moneykeeper.service.CategoryService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -13,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by @author AlNat on 26.07.2020.
@@ -57,7 +59,7 @@ public class CategoryController {
             @ApiResponse(responseCode = "500", description = "Ошибка при обработки запроса", content = @Content)
     })
     @RequestMapping(value = "/{categoryID}", method = RequestMethod.GET)
-    public Category getCategoryByID(
+    public Optional<Category> getCategoryByID(
             @Parameter(description = "Идентификатор категории", required = true, example = "1")
             @PathVariable
                     Integer categoryID) {
@@ -102,7 +104,7 @@ public class CategoryController {
                     String description,
             @Parameter(description = "Имя вышестоящей категории", required = false, example = "Категория")
             @RequestParam
-                    String parentCategoryName) {
+                    String parentCategoryName) throws MoneyKeeperNotFoundException {
         categoryService.create(name, description, parentCategoryName);
     }
 

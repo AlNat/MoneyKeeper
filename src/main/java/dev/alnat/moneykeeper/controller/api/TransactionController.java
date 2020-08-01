@@ -1,6 +1,7 @@
 package dev.alnat.moneykeeper.controller.api;
 
 import dev.alnat.moneykeeper.dto.filter.TransactionSearchFilter;
+import dev.alnat.moneykeeper.exception.MoneyKeeperException;
 import dev.alnat.moneykeeper.model.Transaction;
 import dev.alnat.moneykeeper.model.enums.TransactionStatusEnum;
 import dev.alnat.moneykeeper.model.enums.TransactionTypeEnum;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by @author AlNat on 26.07.2020.
@@ -65,7 +67,7 @@ public class TransactionController {
     public List<Transaction> getTransactionList(
             @Parameter(description = "Имя счета", required = true, example = "card")
             @RequestParam
-                    String accountName) {
+                    String accountName) throws MoneyKeeperException {
         return transactionService.getTransactionsByAccountName(accountName);
     }
 
@@ -80,7 +82,7 @@ public class TransactionController {
             @ApiResponse(responseCode = "500", description = "Ошибка при обработки запроса", content = @Content)
     })
     @RequestMapping(value = "/{transactionID}", method = RequestMethod.GET)
-    public Transaction getTransactionByID(
+    public Optional<Transaction> getTransactionByID(
             @Parameter(description = "Идентификатор транзакции", required = true, example = "1")
             @PathVariable
                     Integer transactionID) {
@@ -101,7 +103,7 @@ public class TransactionController {
     public void addTransaction(
             @Parameter(description = "Новая транзакция", required = true)
             @RequestBody
-                    Transaction transaction) {
+                    Transaction transaction) throws MoneyKeeperException {
         transactionService.create(transaction);
     }
 
@@ -138,7 +140,7 @@ public class TransactionController {
                 String categoryName,
             @Parameter(description = "Имя счета", required = true, example = "TEST")
             @RequestParam
-                String accountName) {
+                String accountName) throws MoneyKeeperException {
         transactionService.create(processDate, amount, status, type, comment, categoryName, accountName);
     }
 

@@ -4,6 +4,8 @@ import dev.alnat.moneykeeper.model.Account;
 import dev.alnat.moneykeeper.model.enums.AccountTypeEnum;
 
 import java.util.List;
+import java.util.Optional;
+
 
 /**
  * Created by @author AlNat on 26.07.2020.
@@ -11,7 +13,7 @@ import java.util.List;
  */
 public interface AccountService {
 
-    Account get(Integer accountID);
+    Optional<Account> get(Integer accountID);
 
     void create(Account account);
 
@@ -21,7 +23,7 @@ public interface AccountService {
 
     void delete(Integer accountID);
 
-    Account getAccountByName(String name);
+    Optional<Account> getAccountByName(String name);
 
     List<Account> getAccountList();
 

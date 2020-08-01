@@ -1,6 +1,7 @@
 package dev.alnat.moneykeeper.service.impl;
 
 import dev.alnat.moneykeeper.dao.CategoryRepository;
+import dev.alnat.moneykeeper.exception.MoneyKeeperNotFoundException;
 import dev.alnat.moneykeeper.model.Category;
 import dev.alnat.moneykeeper.service.CategoryService;
 import dev.alnat.moneykeeper.util.StringUtil;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -29,8 +31,8 @@ public class CategoryServiceImpl implements CategoryService {
 
 
     @Override
-    public Category get(Integer categoryID) {
-        return categoryRepository.findById(categoryID).get(); // TODO Обработка специализированным Exception про NotFound
+    public Optional<Category> get(Integer categoryID) {
+        return categoryRepository.findById(categoryID);
     }
 
     @Override
@@ -39,14 +41,17 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public void create(String name, String description, String parentCategoryName) {
+    public void create(String name, String description, String parentCategoryName) throws MoneyKeeperNotFoundException {
         Category category = new Category();
         category.setName(name);
         category.setDescription(description);
 
         if (!StringUtil.isNullOrEmpty(parentCategoryName)) {
-            Category parentCategory = categoryRepository.getCategoryByName(parentCategoryName);
-            category.setParentCategory(parentCategory);
+            Optional<Category> parentCategory = categoryRepository.findCategoryByName(parentCategoryName);
+            if (parentCategory.isEmpty()) {
+                throw new MoneyKeeperNotFoundException("");
+            }
+            category.setParentCategory(parentCategory.get());
         }
 
         categoryRepository.save(category);
@@ -63,8 +68,8 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public Category getCategoryByName(String name) {
-        return categoryRepository.getCategoryByName(name);
+    public Optional<Category> getCategoryByName(String name) {
+        return categoryRepository.findCategoryByName(name);
     }
 
     @Override

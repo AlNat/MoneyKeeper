@@ -1,8 +1,11 @@
 package dev.alnat.moneykeeper.service;
 
+import dev.alnat.moneykeeper.exception.MoneyKeeperNotFoundException;
 import dev.alnat.moneykeeper.model.Category;
 
 import java.util.List;
+import java.util.Optional;
+
 
 /**
  * Created by @author AlNat on 26.07.2020.
@@ -10,17 +13,17 @@ import java.util.List;
  */
 public interface CategoryService {
 
-    Category get(Integer categoryID);
+    Optional<Category> get(Integer categoryID);
 
     void create(Category category);
 
-    void create(String name, String description, String parentCategoryName);
+    void create(String name, String description, String parentCategoryName) throws MoneyKeeperNotFoundException;
 
     void delete(Category category);
 
     void delete(Integer categoryID);
 
-    Category getCategoryByName(String name);
+    Optional<Category> getCategoryByName(String name);
 
     List<Category> getAllCategory();
 

@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by @author AlNat on 26.07.2020.
@@ -57,7 +58,7 @@ public class AccountController {
             @ApiResponse(responseCode = "500", description = "Ошибка при обработки запроса", content = @Content)
     })
     @RequestMapping(value = "/{accountID}", method = RequestMethod.GET)
-    public Account getAccountByID(
+    public Optional<Account> getAccountByID(
             @Parameter(description = "Идентификатор счета", required = true, example = "1")
             @PathVariable
                     Integer accountID) {
@@ -75,7 +76,7 @@ public class AccountController {
             @ApiResponse(responseCode = "500", description = "Ошибка при обработки запроса", content = @Content)
     })
     @RequestMapping(value = "/search", method = RequestMethod.GET)
-    public Account getAccountByName(
+    public Optional<Account> getAccountByName(
             @Parameter(description = "Имя счет", required = true, example = "card")
             @RequestParam
                     String accountName) {

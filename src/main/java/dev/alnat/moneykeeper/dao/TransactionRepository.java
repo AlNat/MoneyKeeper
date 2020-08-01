@@ -3,7 +3,10 @@ package dev.alnat.moneykeeper.dao;
 import dev.alnat.moneykeeper.dto.filter.TransactionSearchFilter;
 import dev.alnat.moneykeeper.model.Account;
 import dev.alnat.moneykeeper.model.Transaction;
+
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by @author AlNat on 20.07.2020.
@@ -17,7 +20,7 @@ public interface TransactionRepository {
 
     void delete(Integer transactionID);
 
-    Transaction getByID(Integer transactionID);
+    Optional<Transaction> getByID(Integer transactionID);
 
     List<Transaction> getAll();
 

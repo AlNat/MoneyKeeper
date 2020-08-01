@@ -9,6 +9,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * Created by @author AlNat on 26.07.2020.
@@ -25,7 +26,7 @@ public interface AccountRepository extends CrudRepository<Account, Integer> {
      * @param accountName имя счета
      * @return сам счет
      */
-    Account getAccountByName(String accountName);
+    Optional<Account> findAccountByName(String accountName);
 
     /**
      * Получение списка счетов по типу

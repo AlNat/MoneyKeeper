@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -29,8 +30,8 @@ public class AccountServiceImpl implements AccountService {
 
 
     @Override
-    public Account get(Integer accountID) {
-        return accountRepository.findById(accountID).get(); // TODO Обработка специализированным Exception про NotFound
+    public Optional<Account> get(Integer accountID) {
+        return accountRepository.findById(accountID);
     }
 
     @Override
@@ -58,8 +59,8 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public Account getAccountByName(String name) {
-        return accountRepository.getAccountByName(name);
+    public Optional<Account> getAccountByName(String name) {
+        return accountRepository.findAccountByName(name);
     }
 
     @Override
