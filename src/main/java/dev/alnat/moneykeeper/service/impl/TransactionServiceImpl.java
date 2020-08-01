@@ -131,6 +131,7 @@ public class TransactionServiceImpl implements TransactionService {
         Transaction transaction = new Transaction();
         transaction.setAccount(account.get());
         transaction.setCategory(category);
+        transaction.setAmount(amount);
         transaction.setComment(comment);
         transaction.setStatus(status == null ? TransactionStatusEnum.CONFORMED : status);
         transaction.setType(type);

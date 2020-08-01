@@ -20,6 +20,8 @@
 
 	<properties>
 		<java.version>11</java.version>
+
+		<spring.doc.version>1.4.3</spring.doc.version>
 	</properties>
 
 	<dependencies>
@@ -49,23 +51,33 @@
 			<groupId>com.fasterxml.jackson.dataformat</groupId>
 			<artifactId>jackson-dataformat-xml</artifactId>
 		</dependency>
-		<!-- Для корректной серилиализации объектов формата Lazy -->
+		<!-- Для корректной сериализации объектов формата Lazy Jackson-ом -->
 		<dependency>
 			<groupId>com.fasterxml.jackson.datatype</groupId>
 			<artifactId>jackson-datatype-hibernate5</artifactId>
 		</dependency>
 
+		<!-- OpenAPI документация -->
 		<dependency>
 			<groupId>org.springdoc</groupId>
 			<artifactId>springdoc-openapi-ui</artifactId>
-			<version>1.4.3</version>
+			<version>${spring.doc.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springdoc</groupId>
 			<artifactId>springdoc-openapi-security</artifactId>
-			<version>1.4.3</version>
+			<version>${spring.doc.version}</version>
 		</dependency>
 
+		<!-- Hibernate Cache -->
+		<dependency>
+			<groupId>org.ehcache</groupId>
+			<artifactId>ehcache</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>javax.cache</groupId>
+			<artifactId>cache-api</artifactId>
+		</dependency>
 
 		<dependency>
 			<groupId>org.postgresql</groupId>

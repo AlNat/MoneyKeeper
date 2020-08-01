@@ -1,6 +1,7 @@
 package dev.alnat.moneykeeper.dao;
 
 import dev.alnat.moneykeeper.model.Category;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.Optional;
@@ -17,6 +18,7 @@ public interface CategoryRepository extends CrudRepository<Category, Integer> {
      * @param categoryName имя категории
      * @return категория
      */
+    @Cacheable(value = "category")
     Optional<Category> findCategoryByName(String categoryName);
 
 }

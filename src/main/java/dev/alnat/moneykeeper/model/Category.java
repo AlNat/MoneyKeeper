@@ -57,7 +57,8 @@ public class Category extends CreatedUpdated implements Serializable {
     @Schema(description = "Вышестоящая категория", required = false)
     private Category parentCategory;
 
-    @OneToMany(mappedBy = "parentCategory", fetch = FetchType.EAGER)
+
+    @OneToMany(mappedBy = "parentCategory", fetch = FetchType.LAZY)
     @Schema(description = "Список под-категорий", required = false)
     private List<Category> subCategoryList;
 

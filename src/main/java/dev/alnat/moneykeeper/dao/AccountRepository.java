@@ -2,6 +2,7 @@ package dev.alnat.moneykeeper.dao;
 
 import dev.alnat.moneykeeper.model.Account;
 import dev.alnat.moneykeeper.model.enums.AccountTypeEnum;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
@@ -26,6 +27,7 @@ public interface AccountRepository extends CrudRepository<Account, Integer> {
      * @param accountName имя счета
      * @return сам счет
      */
+    @Cacheable(value = "account")
     Optional<Account> findAccountByName(String accountName);
 
     /**

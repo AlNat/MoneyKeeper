@@ -91,11 +91,11 @@ public class TransactionController {
                     String accountName,
             @Parameter(description = "Дата и время начала выборки", required = true, example = "2020-01-01 00:00:01")
             @RequestParam
-            @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:SS")
+            @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
                     LocalDateTime from,
             @Parameter(description = "Дата и время завершения выборки", required = true, example = "2020-01-01 23:59:59")
             @RequestParam
-            @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:SS")
+            @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
                     LocalDateTime to) throws MoneyKeeperException {
         return transactionService.getTransactionsByAccountName(accountName, from, to);
     }
@@ -196,7 +196,7 @@ public class TransactionController {
     public void addTransaction(
             @Parameter(description = "Дата и время проведения", required = false, example = "2020-01-01 12:00:00")
             @RequestParam
-            @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:SS")
+            @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
                     LocalDateTime processDate,
             @Parameter(description = "Сумма операции", required = true, example = "100.00")
             @RequestParam
@@ -210,7 +210,7 @@ public class TransactionController {
             @Parameter(description = "Комментарий", required = false, example = "Тестовая покупка")
             @RequestParam
                 String comment,
-            @Parameter(description = "Имя категории", required = true, example = "TEST")
+            @Parameter(description = "Имя категории", required = false, example = "TEST")
             @RequestParam
                 String categoryName,
             @Parameter(description = "Имя счета", required = true, example = "TEST")
