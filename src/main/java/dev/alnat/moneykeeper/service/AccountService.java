@@ -14,13 +14,13 @@ public interface AccountService {
 
     Optional<Account> get(Integer accountID);
 
-    Optional<Account> getAccountByName(String name);
+    Optional<Account> getAccountByKey(String key);
 
     List<Account> getAccountList();
 
     void create(Account account);
 
-    void create(String name, String description, AccountTypeEnum type);
+    void create(String key, String name, String description, AccountTypeEnum type);
 
     void update(Account account);
 

@@ -14,13 +14,13 @@ public interface CategoryService {
 
     Optional<Category> get(Integer categoryID);
 
-    Optional<Category> getCategoryByName(String name);
+    Optional<Category> getCategoryByKey(String key);
 
     List<Category> getAllCategory();
 
     void create(Category category);
 
-    void create(String name, String description, String parentCategoryName) throws MoneyKeeperNotFoundException;
+    void create(String key, String name, String description, String parentCategoryKey) throws MoneyKeeperNotFoundException;
 
     void update(Category category);
 

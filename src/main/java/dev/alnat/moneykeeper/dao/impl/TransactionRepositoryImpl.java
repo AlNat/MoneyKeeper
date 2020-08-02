@@ -124,13 +124,13 @@ public class TransactionRepositoryImpl implements TransactionRepository {
 
 
         // Если есть фильтр по категориям
-        if (filter.getCategoriesNameList() != null && !filter.getCategoriesNameList().isEmpty()) {
+        if (filter.getCategoryKeyList() != null && !filter.getCategoryKeyList().isEmpty()) {
             Join<Transaction, Category> categoryJoin = root.join("account", JoinType.LEFT); // Join таблиц Transaction и Category
-            conditions.add(categoryJoin.<String>get("name").in(filter.getCategoriesNameList()));
+            conditions.add(categoryJoin.<String>get("key").in(filter.getCategoryKeyList()));
         }
 
         // Если есть фильтрация по номеру кошелька или по списку имен кошельков
-        if (filter.getAccountID() != null || (filter.getAccountNameList() != null && !filter.getAccountNameList().isEmpty())) {
+        if (filter.getAccountID() != null || (filter.getAccountKeyList() != null && !filter.getAccountKeyList().isEmpty())) {
             Join<Transaction, Account> accountJoin = root.join("account", JoinType.LEFT); // Join таблиц Transaction и Account
             // Ключ он подберет сам, но на всякий случай - transactionJoin.on(criteriaBuilder.equal(root.get("account"), transactionJoin.get("accountID")));
 
@@ -138,8 +138,8 @@ public class TransactionRepositoryImpl implements TransactionRepository {
                 conditions.add(criteriaBuilder.equal(accountJoin.<Integer>get("accountID"), filter.getAccountID()));
             }
 
-            if (filter.getAccountNameList() != null && !filter.getAccountNameList().isEmpty()) {
-                conditions.add(accountJoin.<String>get("name").in(filter.getAccountNameList()));
+            if (filter.getAccountKeyList() != null && !filter.getAccountKeyList().isEmpty()) {
+                conditions.add(accountJoin.<String>get("key").in(filter.getAccountKeyList()));
             }
         }
 

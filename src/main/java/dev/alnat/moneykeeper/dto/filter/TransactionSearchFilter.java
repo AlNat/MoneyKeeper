@@ -13,13 +13,14 @@ import java.util.List;
  * Created by @author AlNat on 26.07.2020.
  * Licensed by Apache License, Version 2.0
  */
+@SuppressWarnings("unused")
 public class TransactionSearchFilter {
 
     private Integer accountID;
 
-    private List<String> accountNameList;
+    private List<String> accountKeyList;
 
-    private List<String> categoriesNameList;
+    private List<String> categoryKeyList;
 
     private TransactionStatusEnum status;
 
@@ -37,8 +38,8 @@ public class TransactionSearchFilter {
 
     private TransactionSearchFilter(Builder builder) {
         setAccountID(builder.accountID);
-        setAccountNameList(builder.accountNameList);
-        setCategoriesNameList(builder.categoriesNameList);
+        setAccountKeyList(builder.accountKeyList);
+        setCategoryKeyList(builder.categoryKeyList);
         setStatus(builder.status);
         setType(builder.type);
         setFrom(builder.from);
@@ -60,20 +61,20 @@ public class TransactionSearchFilter {
         this.accountID = accountID;
     }
 
-    public List<String> getAccountNameList() {
-        return accountNameList;
+    public List<String> getAccountKeyList() {
+        return accountKeyList;
     }
 
-    public void setAccountNameList(List<String> accountNameList) {
-        this.accountNameList = accountNameList;
+    public void setAccountKeyList(List<String> accountKeyList) {
+        this.accountKeyList = accountKeyList;
     }
 
-    public List<String> getCategoriesNameList() {
-        return categoriesNameList;
+    public List<String> getCategoryKeyList() {
+        return categoryKeyList;
     }
 
-    public void setCategoriesNameList(List<String> categoriesNameList) {
-        this.categoriesNameList = categoriesNameList;
+    public void setCategoryKeyList(List<String> categoryKeyList) {
+        this.categoryKeyList = categoryKeyList;
     }
 
     public TransactionStatusEnum getStatus() {
@@ -122,8 +123,8 @@ public class TransactionSearchFilter {
      */
     public static final class Builder {
         private Integer accountID;
-        private List<String> accountNameList;
-        private List<String> categoriesNameList;
+        private List<String> accountKeyList;
+        private List<String> categoryKeyList;
         private TransactionStatusEnum status;
         private TransactionTypeEnum type;
         private LocalDateTime from;
@@ -139,12 +140,12 @@ public class TransactionSearchFilter {
         }
 
         public Builder accountNameList(List<String> val) {
-            accountNameList = val;
+            accountKeyList = val;
             return this;
         }
 
         public Builder categoriesNameList(List<String> val) {
-            categoriesNameList = val;
+            categoryKeyList = val;
             return this;
         }
 

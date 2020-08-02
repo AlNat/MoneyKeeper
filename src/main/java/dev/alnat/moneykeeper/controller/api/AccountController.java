@@ -80,7 +80,7 @@ public class AccountController {
             @Parameter(description = "Имя счет", required = true, example = "card")
             @RequestParam
                     String accountName) {
-        return accountService.getAccountByName(accountName);
+        return accountService.getAccountByKey(accountName);
     }
 
 
@@ -120,7 +120,7 @@ public class AccountController {
     }
 
 
-    @Operation(summary = "Создание нового счета")
+    @Operation(summary = "Создание нового счета по парамнтрам")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Счет успешно создан"),
             @ApiResponse(responseCode = "400", description = "Ошибка в запросе"),
@@ -131,16 +131,19 @@ public class AccountController {
     @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(value = "/custom", method = RequestMethod.POST)
     public void addAccount(
+            @Parameter(description = "Идентификатор счета", required = false, example = "test_account")
+            @RequestParam(required = false)
+                    String key,
             @Parameter(description = "Имя счета", required = true, example = "Тестовый счет")
             @RequestParam
                     String name,
             @Parameter(description = "Описание счета", required = false, example = "Тестовый счет для тестирования")
-            @RequestParam
+            @RequestParam(required = false)
                     String description,
             @Parameter(description = "Тип счета", required = true, example = "CASH")
             @RequestParam
                     AccountTypeEnum type) {
-        accountService.create(name, description, type);
+        accountService.create(key, name, description, type);
     }
 
 

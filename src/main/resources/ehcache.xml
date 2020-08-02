@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config xmlns='http://www.ehcache.org/v3'>
-    <!--Кеш для аккаунтов-->
+
+    <!--Кеш для аккаунтов по идентификатору-->
     <cache alias="account">
         <key-type>java.lang.String</key-type>
         <value-type>dev.alnat.moneykeeper.model.Account</value-type>
@@ -12,7 +13,7 @@
         </resources>
     </cache>
 
-    <!--Кеш для категорий-->
+    <!--Кеш для категорий по идентификатору-->
     <cache alias="category">
         <key-type>java.lang.String</key-type>
         <value-type>dev.alnat.moneykeeper.model.Category</value-type>
@@ -23,4 +24,5 @@
             <heap unit="MB">1</heap>
         </resources>
     </cache>
+
 </config>

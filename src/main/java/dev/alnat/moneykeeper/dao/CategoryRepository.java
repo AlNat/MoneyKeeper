@@ -13,12 +13,20 @@ import java.util.Optional;
 public interface CategoryRepository extends CrudRepository<Category, Integer> {
 
     /**
+     * Поиск категории по идентификатору
+     *
+     * @param categoryKey имя категории
+     * @return категория
+     */
+    @Cacheable(value = "category")
+    Optional<Category> findCategoryByKey(String categoryKey);
+
+    /**
      * Поиск категории по имени
      *
      * @param categoryName имя категории
      * @return категория
      */
-    @Cacheable(value = "category")
     Optional<Category> findCategoryByName(String categoryName);
 
 }

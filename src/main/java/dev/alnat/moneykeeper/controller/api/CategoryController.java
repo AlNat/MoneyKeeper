@@ -113,16 +113,19 @@ public class CategoryController {
     @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(value = "/custom", method = RequestMethod.POST)
     public void addCategory(
+            @Parameter(description = "Идентификатор категории категории", required = false, example = "test_category")
+            @RequestParam(required = false)
+                    String key,
             @Parameter(description = "Имя категории", required = true, example = "Тестовая категория")
             @RequestParam
                     String name,
             @Parameter(description = "Описание категории", required = true, example = "Категория покупок для тестирования")
             @RequestParam
                     String description,
-            @Parameter(description = "Имя вышестоящей категории", required = false, example = "Категория")
-            @RequestParam
-                    String parentCategoryName) throws MoneyKeeperNotFoundException {
-        categoryService.create(name, description, parentCategoryName);
+            @Parameter(description = "Идентификатор вышестоящей категории", required = false, example = "Категория")
+            @RequestParam(required = false)
+                    String parentCategoryKey) throws MoneyKeeperNotFoundException {
+        categoryService.create(key, name, description, parentCategoryKey);
     }
 
 

@@ -1,13 +1,21 @@
 package dev.alnat.moneykeeper.service.impl;
 
 import dev.alnat.moneykeeper.dao.AccountRepository;
+import dev.alnat.moneykeeper.dto.AccountInfo;
+import dev.alnat.moneykeeper.exception.MoneyKeeperException;
+import dev.alnat.moneykeeper.exception.MoneyKeeperNotFoundException;
 import dev.alnat.moneykeeper.model.Account;
 import dev.alnat.moneykeeper.model.enums.AccountTypeEnum;
 import dev.alnat.moneykeeper.service.AccountService;
+import dev.alnat.moneykeeper.service.TransactionService;
+import dev.alnat.moneykeeper.util.StringUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -17,16 +25,18 @@ import java.util.stream.StreamSupport;
  * Created by @author AlNat on 26.07.2020.
  * Licensed by Apache License, Version 2.0
  */
+@SuppressWarnings("SpringJavaAutowiredFieldsWarningInspection")
 @Service
 @Transactional
 public class AccountServiceImpl implements AccountService {
 
-    private final AccountRepository accountRepository;
+    private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    public AccountServiceImpl(AccountRepository accountRepository) {
-        this.accountRepository = accountRepository;
-    }
+    private AccountRepository accountRepository;
+
+    @Autowired
+    private TransactionService transactionService;
 
 
     @Override
@@ -64,8 +74,8 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public Optional<Account> getAccountByName(String name) {
-        return accountRepository.findAccountByName(name);
+    public Optional<Account> getAccountByKey(String key) {
+        return accountRepository.findAccountByKey(key);
     }
 
     @Override

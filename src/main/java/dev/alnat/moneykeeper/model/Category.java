@@ -37,6 +37,11 @@ public class Category extends CreatedUpdated implements Serializable {
 
     @Column(nullable = false, unique = true)
     @NotNull
+    @Schema(description = "Идентификатор категории", required = true)
+    private String key;
+
+    @Column(nullable = false)
+    @NotNull
     @Schema(description = "Имя категории", required = true)
     private String name;
 
@@ -74,6 +79,14 @@ public class Category extends CreatedUpdated implements Serializable {
 
     public void setCategoryID(Integer categoryID) {
         this.categoryID = categoryID;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
     }
 
     public String getName() {
@@ -123,6 +136,7 @@ public class Category extends CreatedUpdated implements Serializable {
         if (o == null || getClass() != o.getClass()) return false;
         Category category = (Category) o;
         return Objects.equals(categoryID, category.categoryID) &&
+                Objects.equals(key, category.key) &&
                 Objects.equals(name, category.name) &&
                 Objects.equals(description, category.description) &&
                 Objects.equals(transactionList, category.transactionList) &&
@@ -132,7 +146,7 @@ public class Category extends CreatedUpdated implements Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(categoryID, name, description, transactionList, parentCategory, subCategoryList);
+        return Objects.hash(categoryID, key, name, description, transactionList, parentCategory, subCategoryList);
     }
 
 }

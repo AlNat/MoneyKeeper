@@ -1,9 +1,9 @@
-INSERT INTO account(description, name, type)
-VALUES ('Наличная валюта в кошельке', 'Кошелек', 0),
-       ('Банковская карта ООО Банк', 'Карта', 1);
+INSERT INTO account(key, description, name, type)
+VALUES ('test', 'Наличная валюта в кошельке', 'Кошелек', 0),
+       ('card', 'Банковская карта ООО Банк',  'Карта',   1);
 
-INSERT INTO category(description, name)
-VALUES ('Тестовая категория', 'Категория');
+INSERT INTO category(key, description, name)
+VALUES ('test', 'Тестовая категория', 'Категория');
 
 INSERT INTO transaction(amount, comment, processdate, status, type, accountid, categoryid)
 VALUES (100.00, 'Пополнение счета', current_timestamp, 0, 0, 1, 1),

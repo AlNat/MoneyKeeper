@@ -5,7 +5,6 @@
 
 CREATE DATABASE moneykeeper;
 
-
 -- Создание пользователя
 CREATE USER moneykeeper WITH PASSWORD 'moneykeeper';
 GRANT ALL PRIVILEGES ON DATABASE "moneykeeper" to moneykeeper;
@@ -17,7 +16,8 @@ create table account
     created     timestamp,
     updated     timestamp,
     description varchar(255),
-    name        varchar(255) not null unique,
+    name        varchar(255) not null,
+    key         varchar(255) not null unique,
     type        integer      not null
 );
 alter table account owner to moneykeeper;
@@ -29,7 +29,8 @@ create table category
     created           timestamp,
     updated           timestamp,
     description       varchar(255),
-    name              varchar(255) not null unique,
+    name              varchar(255) not null,
+    key               varchar(255) not null unique,
     parentcategory_id integer
 );
 alter table category owner to moneykeeper;

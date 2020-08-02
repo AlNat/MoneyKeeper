@@ -40,6 +40,11 @@ public class Account extends CreatedUpdated implements Serializable {
 
     @Column(nullable = false, unique = true)
     @NotNull
+    @Schema(description = "Идентификатор счета", required = true)
+    private String key;
+
+    @Column(nullable = false)
+    @NotNull
     @Schema(description = "Имя счета", required = true)
     private String name;
 
@@ -75,6 +80,14 @@ public class Account extends CreatedUpdated implements Serializable {
 
     public void setAccountID(Integer accountID) {
         this.accountID = accountID;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
     }
 
     public String getName() {
@@ -123,6 +136,7 @@ public class Account extends CreatedUpdated implements Serializable {
         if (o == null || getClass() != o.getClass()) return false;
         Account account = (Account) o;
         return Objects.equals(accountID, account.accountID) &&
+                Objects.equals(key, account.key) &&
                 Objects.equals(name, account.name) &&
                 Objects.equals(description, account.description) &&
                 Objects.equals(balance, account.balance) &&
@@ -132,7 +146,7 @@ public class Account extends CreatedUpdated implements Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(accountID, name, description, balance, type, transactionList);
+        return Objects.hash(accountID, key, name, description, balance, type, transactionList);
     }
 
 }

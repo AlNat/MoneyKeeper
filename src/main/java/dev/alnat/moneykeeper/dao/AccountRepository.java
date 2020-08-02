@@ -24,11 +24,11 @@ public interface AccountRepository extends CrudRepository<Account, Integer> {
     /**
      * Получение данных по счету по имени
      *
-     * @param accountName имя счета
+     * @param accountKey идентификатор счета
      * @return сам счет
      */
     @Cacheable(value = "account")
-    Optional<Account> findAccountByName(String accountName);
+    Optional<Account> findAccountByKey(String accountKey);
 
     /**
      * Получение списка счетов по типу

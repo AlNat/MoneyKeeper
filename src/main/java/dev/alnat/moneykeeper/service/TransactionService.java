@@ -33,13 +33,13 @@ public interface TransactionService {
      * @param type тип проводки
      * @param comment комментарий
      * @param categoryName имя категории покупки (может быть null)
-     * @param accountName имя счета, к которому относится транзакция
+     * @param accountKey имя счета, к которому относится транзакция
      * @throws MoneyKeeperException при ошибке
      * @throws MoneyKeeperNotFoundException если категория или счет по этому имени не найдены
      * @throws dev.alnat.moneykeeper.exception.MoneyKeeperIllegalArgumentException если логика заполнения полей будет некорректной
      */
     void create(LocalDateTime processDate, BigDecimal amount, TransactionStatusEnum status,
-                TransactionTypeEnum type, String comment, String categoryName, String accountName)
+                TransactionTypeEnum type, String comment, String categoryName, String accountKey)
             throws MoneyKeeperException;
 
     void update(Transaction transaction);
@@ -59,36 +59,36 @@ public interface TransactionService {
     /**
      * Поиск списка транзакций по аккаунту
      *
-     * @param accountName имя аккаунта
+     * @param accountKey идентификатор счета
      * @return список транзакций
      * @throws MoneyKeeperException при ошибке в работе
      * @throws MoneyKeeperNotFoundException Если сущность не найдена
      */
-    List<Transaction> getTransactionsByAccountName(String accountName) throws MoneyKeeperException;
-
+    List<Transaction> getTransactionsByAccountKey(String accountKey) throws MoneyKeeperException;
+    
     /**
      * Поиск списка транзакций по аккаунту
      *
-     * @param accountName имя аккаунта
+     * @param accountKey идентификатор счета
      * @param from дата начала выборки
      * @param to дата окончания выборки
      * @return список транзакций
      * @throws MoneyKeeperException при ошибке в работе
      * @throws MoneyKeeperNotFoundException Если сущность не найдена
      */
-    List<Transaction> getTransactionsByAccountName(String accountName, LocalDateTime from, LocalDateTime to) throws MoneyKeeperException;
+    List<Transaction> getTransactionsByAccountKey(String accountKey, LocalDateTime from, LocalDateTime to) throws MoneyKeeperException;
 
     /**
      * Поиск списка транзакций по аккаунту
      *
-     * @param accountName имя аккаунта
+     * @param accountKey идентификатор счета
      * @param from дата начала выборки
      * @param to дата окончания выборки
      * @return список транзакций
      * @throws MoneyKeeperException при ошибке в работе
      * @throws MoneyKeeperNotFoundException Если сущность не найдена
      */
-    List<Transaction> getTransactionsByAccountName(String accountName, LocalDate from, LocalDate to) throws MoneyKeeperException;
+    List<Transaction> getTransactionsByAccountKey(String accountKey, LocalDate from, LocalDate to) throws MoneyKeeperException;
 
     /**
      * Метод получения списка транзакций по фильтру поиска

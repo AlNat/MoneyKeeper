@@ -65,12 +65,12 @@ public class TransactionController {
             @ApiResponse(responseCode = "403", description = "Недостаточно прав для запроса", content = @Content),
             @ApiResponse(responseCode = "500", description = "Ошибка при обработки запроса", content = @Content)
     })
-    @RequestMapping(value = "/account/", method = RequestMethod.GET, params = "accountName")
+    @RequestMapping(value = "/account/", method = RequestMethod.GET, params = "accountKey")
     public List<Transaction> getTransactionList(
-            @Parameter(description = "Имя счета", required = true, example = "card")
+            @Parameter(description = "Идентификатор счета", required = true, example = "card")
             @RequestParam
-                    String accountName) throws MoneyKeeperException {
-        return transactionService.getTransactionsByAccountName(accountName);
+                    String accountKey) throws MoneyKeeperException {
+        return transactionService.getTransactionsByAccountKey(accountKey);
     }
 
 
@@ -84,11 +84,11 @@ public class TransactionController {
             @ApiResponse(responseCode = "403", description = "Недостаточно прав для запроса", content = @Content),
             @ApiResponse(responseCode = "500", description = "Ошибка при обработки запроса", content = @Content)
     })
-    @RequestMapping(value = "/account/datetime", method = RequestMethod.GET, params = {"accountName", "from", "to"})
+    @RequestMapping(value = "/account/datetime", method = RequestMethod.GET, params = {"accountKey", "from", "to"})
     public List<Transaction> getTransactionList(
             @Parameter(description = "Имя счета", required = true, example = "card")
             @RequestParam
-                    String accountName,
+                    String accountKey,
             @Parameter(description = "Дата и время начала выборки", required = true, example = "2020-01-01 00:00:01")
             @RequestParam
             @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
@@ -97,7 +97,7 @@ public class TransactionController {
             @RequestParam
             @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
                     LocalDateTime to) throws MoneyKeeperException {
-        return transactionService.getTransactionsByAccountName(accountName, from, to);
+        return transactionService.getTransactionsByAccountKey(accountKey, from, to);
     }
 
 
@@ -111,11 +111,11 @@ public class TransactionController {
             @ApiResponse(responseCode = "403", description = "Недостаточно прав для запроса", content = @Content),
             @ApiResponse(responseCode = "500", description = "Ошибка при обработки запроса", content = @Content)
     })
-    @RequestMapping(value = "/account/date", method = RequestMethod.GET, params = {"accountName", "dateFrom", "dateTo"})
+    @RequestMapping(value = "/account/date", method = RequestMethod.GET, params = {"accountKey", "dateFrom", "dateTo"})
     public List<Transaction> getTransactionList(
             @Parameter(description = "Имя счета", required = true, example = "card")
             @RequestParam
-                    String accountName,
+                    String accountKey,
             @Parameter(description = "Дата начала выборки", required = true, example = "2020-01-01")
             @RequestParam
             @DateTimeFormat(pattern = "yyyy-MM-dd")
@@ -125,7 +125,7 @@ public class TransactionController {
             @RequestParam
             @DateTimeFormat(pattern = "yyyy-MM-dd")
                     LocalDate dateTo) throws MoneyKeeperException {
-        return transactionService.getTransactionsByAccountName(accountName, dateFrom, dateTo);
+        return transactionService.getTransactionsByAccountKey(accountKey, dateFrom, dateTo);
     }
 
 
@@ -215,8 +215,8 @@ public class TransactionController {
                 String categoryName,
             @Parameter(description = "Имя счета", required = true, example = "TEST")
             @RequestParam
-                String accountName) throws MoneyKeeperException {
-        transactionService.create(processDate, amount, status, type, comment, categoryName, accountName);
+                String accountKey) throws MoneyKeeperException {
+        transactionService.create(processDate, amount, status, type, comment, categoryName, accountKey);
     }
 
 

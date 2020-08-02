@@ -31,26 +31,21 @@ import java.util.Optional;
  * Created by @author AlNat on 26.07.2020.
  * Licensed by Apache License, Version 2.0
  */
+@SuppressWarnings("SpringJavaAutowiredFieldsWarningInspection")
 @Service
 @Transactional
 public class TransactionServiceImpl implements TransactionService {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
-    private final TransactionRepository transactionRepository;
-
-    private final AccountService accountService;
-
-    private final CategoryService categoryService;
+    @Autowired
+    private TransactionRepository transactionRepository;
 
     @Autowired
-    public TransactionServiceImpl(TransactionRepository transactionRepository,
-                                  AccountService accountService,
-                                  CategoryService categoryService) {
-        this.transactionRepository = transactionRepository;
-        this.accountService = accountService;
-        this.categoryService = categoryService;
-    }
+    private AccountService accountService;
+
+    @Autowired
+    private CategoryService categoryService;
 
 
     // Вообще не очень хорошо использовать Entity как DTO
@@ -66,32 +61,32 @@ public class TransactionServiceImpl implements TransactionService {
         // Если он есть, но нет PK - пытаемся его найти
         if (transaction.getAccount().getAccountID() == null) {
             // Если нет имени - то тоже все плохо
-            if (StringUtil.isNullOrEmpty(transaction.getAccount().getName())) {
-                log.error("При сохранении транзакции не передано имя счета!");
-                throw new MoneyKeeperIllegalArgumentException("При сохранении транзакции не передано имя счета!");
+            if (StringUtil.isNullOrEmpty(transaction.getAccount().getKey())) {
+                log.error("При сохранении транзакции не передан идентификатор счета!");
+                throw new MoneyKeeperIllegalArgumentException("При сохранении транзакции не передан идентификатор счета!");
             }
             transaction.setAccount(
-                    accountService.getAccountByName(transaction.getAccount().getName())
+                    accountService.getAccountByKey(transaction.getAccount().getKey())
                     .orElseThrow(() -> {
-                        log.error("При сохранении транзакции передано несуществующее имя счета: {}!",
+                        log.error("При сохранении транзакции передано несуществующий идентификатор счета: {}!",
                                 transaction.getAccount().getName());
-                        return new MoneyKeeperIllegalArgumentException("При сохранении транзакции передано несуществующее имя счета!");
+                        return new MoneyKeeperIllegalArgumentException("При сохранении транзакции передано несуществующий идентификатор счета!");
                     })
             );
         }
 
         // Проверяем что в переданной сущности заполнена категория
         if (transaction.getCategory() != null && transaction.getCategory().getCategoryID() == null) {
-            if (StringUtil.isNullOrEmpty(transaction.getCategory().getName())) {
-                log.error("При сохранении транзакции не передано имя категории!");
-                throw new MoneyKeeperIllegalArgumentException("При сохранении транзакции не передано имя категории!");
+            if (StringUtil.isNullOrEmpty(transaction.getCategory().getKey())) {
+                log.error("При сохранении транзакции не передан идентификатор категории!");
+                throw new MoneyKeeperIllegalArgumentException("При сохранении транзакции не передан идентификатор категории!");
             }
             transaction.setCategory(
-                    categoryService.getCategoryByName(transaction.getCategory().getName())
+                    categoryService.getCategoryByKey(transaction.getCategory().getName())
                     .orElseThrow(() -> {
-                            log.error("При сохранении транзакции передано несуществующее имя категории: {}!",
+                            log.error("При сохранении транзакции передано несуществующий идентификатор категории: {}!",
                                     transaction.getAccount().getName());
-                            return new MoneyKeeperIllegalArgumentException("При сохранении транзакции передано несуществующее имя категории");
+                            return new MoneyKeeperIllegalArgumentException("При сохранении транзакции передано несуществующий идентификатор категории");
                         }
                     ));
         }
@@ -103,16 +98,16 @@ public class TransactionServiceImpl implements TransactionService {
     @Override
     public void create(LocalDateTime processDate, BigDecimal amount,
                        TransactionStatusEnum status, TransactionTypeEnum type,
-                       String comment, String categoryName, String accountName) throws MoneyKeeperException {
-        Optional<Account> account = accountService.getAccountByName(accountName);
+                       String comment, String categoryName, String accountKey) throws MoneyKeeperException {
+        Optional<Account> account = accountService.getAccountByKey(accountKey);
         if (account.isEmpty()) {
-            log.error("При сохранении транзакции передано несуществующее имя счета: {}", accountName);
-            throw new MoneyKeeperNotFoundException("При сохранении транзакции передано несуществующее имя счета!");
+            log.error("При сохранении транзакции передан несуществующий идентификатор счета: {}", accountKey);
+            throw new MoneyKeeperNotFoundException("При сохранении транзакции передан несуществующий идентификатор счета!");
         }
 
         Category category = null;
         if (!StringUtil.isNullOrEmpty(categoryName)) {
-            Optional<Category> c = categoryService.getCategoryByName(categoryName);
+            Optional<Category> c = categoryService.getCategoryByKey(categoryName);
             category = c.orElse(null);
         }
 
@@ -166,12 +161,12 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public List<Transaction> getTransactionsByAccountName(String accountName) throws MoneyKeeperException {
-        Optional<Account> account = accountService.getAccountByName(accountName);
+    public List<Transaction> getTransactionsByAccountKey(String accountKey) throws MoneyKeeperException {
+        Optional<Account> account = accountService.getAccountByKey(accountKey);
 
         if (account.isEmpty()) {
-            log.error("Ошибка при получении списка транзакций по счету {} - счета с таким именем нет!", account);
-            throw new MoneyKeeperNotFoundException("Нет счета с таким именем!");
+            log.error("Ошибка при получении списка транзакций по счету {} - счета с таким идентификатором нет!", account);
+            throw new MoneyKeeperNotFoundException("Нет счета с таким идентификатором!");
         }
 
         return getTransactionsByAccount(account.get());
@@ -179,13 +174,13 @@ public class TransactionServiceImpl implements TransactionService {
 
 
     @Override
-    public List<Transaction> getTransactionsByAccountName(String accountName, LocalDateTime from, LocalDateTime to)
+    public List<Transaction> getTransactionsByAccountKey(String accountKey, LocalDateTime from, LocalDateTime to)
             throws MoneyKeeperException {
-        Optional<Account> account = accountService.getAccountByName(accountName);
+        Optional<Account> account = accountService.getAccountByKey(accountKey);
 
         if (account.isEmpty()) {
-            log.error("Ошибка при получении списка транзакций по счету {} - счета с таким именем нет!", account);
-            throw new MoneyKeeperNotFoundException("Нет счета с таким именем!");
+            log.error("Ошибка при получении списка транзакций по счету {} - счета с таким идентификатором нет!", account);
+            throw new MoneyKeeperNotFoundException("Нет счета с таким идентификатором!");
         }
 
         return transactionRepository.getTransactionsByAccount(account.get(), from, to);
@@ -193,12 +188,12 @@ public class TransactionServiceImpl implements TransactionService {
 
 
     @Override
-    public List<Transaction> getTransactionsByAccountName(String accountName, LocalDate from, LocalDate to) throws MoneyKeeperException {
-        Optional<Account> account = accountService.getAccountByName(accountName);
+    public List<Transaction> getTransactionsByAccountKey(String accountKey, LocalDate from, LocalDate to) throws MoneyKeeperException {
+        Optional<Account> account = accountService.getAccountByKey(accountKey);
 
         if (account.isEmpty()) {
-            log.error("Ошибка при получении списка транзакций по счету {} - счета с таким именем нет!", account);
-            throw new MoneyKeeperNotFoundException("Нет счета с таким именем!");
+            log.error("Ошибка при получении списка транзакций по счету {} - счета с таким идентификатором нет!", account);
+            throw new MoneyKeeperNotFoundException("Нет счета с таким идентификатором!");
         }
 
         return transactionRepository.getTransactionsByAccount(account.get(), from, to);
