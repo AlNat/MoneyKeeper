@@ -1,18 +1,23 @@
 package dev.alnat.moneykeeper.controller.api;
 
+import dev.alnat.moneykeeper.dto.AccountInfo;
+import dev.alnat.moneykeeper.exception.MoneyKeeperException;
 import dev.alnat.moneykeeper.model.Account;
 import dev.alnat.moneykeeper.model.enums.AccountTypeEnum;
 import dev.alnat.moneykeeper.service.AccountService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -163,5 +168,59 @@ public class AccountController {
                     Integer accountID) {
         accountService.delete(accountID);
     }
+
+
+    @Operation(summary = "Получение агрегированной информации по счету")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Запрос успешно выполнен"),
+            @ApiResponse(responseCode = "400", description = "Ошибка в запросе", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Счет с таким идентификатором не найдено", content = @Content),
+            @ApiResponse(responseCode = "401", description = "Запрос не авторизован", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Недостаточно прав для запроса", content = @Content),
+            @ApiResponse(responseCode = "500", description = "Ошибка при обработки запроса", content = @Content)
+    })
+    @RequestMapping(value = "/info/{accountID}", method = RequestMethod.GET)
+    public AccountInfo getAccountInfo(
+            @Parameter(description = "Идентификатор счета", required = true, example = "1")
+            @PathVariable
+                    Integer accountID,
+            @Parameter(description = "Дата начала выборки", required = true, example = "2020-01-01")
+            @RequestParam
+            @DateTimeFormat(pattern = "yyyy-MM-dd")
+                    LocalDate from,
+            @Parameter(description = "Дата завершения выборки", required = true, example = "2020-01-02",
+                    schema = @Schema)
+            @RequestParam
+            @DateTimeFormat(pattern = "yyyy-MM-dd")
+                    LocalDate to) throws MoneyKeeperException {
+        return accountService.getAccountInfo(accountID, from, to);
+    }
+
+    @Operation(summary = "Получение агрегированной информации по счету")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Запрос успешно выполнен"),
+            @ApiResponse(responseCode = "400", description = "Ошибка в запросе", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Счет с таким идентификатором не найдено", content = @Content),
+            @ApiResponse(responseCode = "401", description = "Запрос не авторизован", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Недостаточно прав для запроса", content = @Content),
+            @ApiResponse(responseCode = "500", description = "Ошибка при обработки запроса", content = @Content)
+    })
+    @RequestMapping(value = "/info/", method = RequestMethod.GET)
+    public AccountInfo getAccountInfo(
+            @Parameter(description = "Идентификатор счета", required = true, example = "1")
+            @RequestParam
+                    String accountKey,
+            @Parameter(description = "Дата начала выборки", required = true, example = "2020-01-01")
+            @RequestParam
+            @DateTimeFormat(pattern = "yyyy-MM-dd")
+                    LocalDate from,
+            @Parameter(description = "Дата завершения выборки", required = true, example = "2020-01-02",
+                    schema = @Schema)
+            @RequestParam
+            @DateTimeFormat(pattern = "yyyy-MM-dd")
+                    LocalDate to) throws MoneyKeeperException {
+        return accountService.getAccountInfo(accountKey, from, to);
+    }
+
 
 }

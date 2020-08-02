@@ -1,15 +1,15 @@
 package dev.alnat.moneykeeper.dao;
 
 import dev.alnat.moneykeeper.model.Account;
+import dev.alnat.moneykeeper.dto.AccountBalance;
 import dev.alnat.moneykeeper.model.enums.AccountTypeEnum;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -18,8 +18,27 @@ import java.util.Optional;
  */
 public interface AccountRepository extends CrudRepository<Account, Integer> {
 
-    @Query(value = "SELECT * FROM account_balance(:account.accountID)", nativeQuery = true)
-    Map<LocalDate, BigDecimal> getAccountBalance(Account account);
+    /**
+     * Получение баланса по счету на каждый день
+     *
+     * @param accountID идентификатор счета
+     * @return баланс по дням
+     */
+    @Query(name = "getDataFromAccountBalance", nativeQuery = true)
+    List<AccountBalance> getAccountBalanceMap(@Param("accountID") Integer accountID);
+
+    /**
+     * Получение баланса по счету на каждый день
+     *
+     * @param accountID идентификатор счета
+     * @param from дата начала выборки
+     * @param to дата завершения выборки
+     * @return баланс по дням
+     */
+    @Query(name = "getDataFromAccountBalanceWithDate", nativeQuery = true)
+    List<AccountBalance> getAccountBalanceMap(@Param("accountID") Integer accountID,
+                                              @Param("from") LocalDate from,
+                                              @Param("to") LocalDate to);
 
     /**
      * Получение данных по счету по имени

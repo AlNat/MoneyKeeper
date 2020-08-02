@@ -10,6 +10,7 @@ import dev.alnat.moneykeeper.model.enums.TransactionStatusEnum;
 import dev.alnat.moneykeeper.model.enums.TransactionTypeEnum;
 import dev.alnat.moneykeeper.util.StringUtil;
 import org.hibernate.Session;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -28,12 +29,9 @@ import java.util.Optional;
 @Repository
 public class TransactionRepositoryImpl implements TransactionRepository {
 
+    @Autowired
     @PersistenceContext
-    private final EntityManager entityManager;
-
-    public TransactionRepositoryImpl(EntityManager entityManager) {
-        this.entityManager = entityManager;
-    }
+    private EntityManager entityManager;
 
 
     @Override
