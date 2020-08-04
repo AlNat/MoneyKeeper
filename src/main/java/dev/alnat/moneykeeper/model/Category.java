@@ -62,6 +62,11 @@ public class Category extends CreatedUpdated implements Serializable {
     @Schema(description = "Вышестоящая категория", required = false)
     private Category parentCategory;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
+    @JoinColumn(name = "iconid", nullable = true)
+    @Schema(description = "Иконка категории", required = false)
+    private Icon icon;
 
     @OneToMany(mappedBy = "parentCategory", fetch = FetchType.LAZY)
     @Schema(description = "Список под-категорий", required = false)
@@ -121,6 +126,14 @@ public class Category extends CreatedUpdated implements Serializable {
         this.parentCategory = parentCategory;
     }
 
+    public Icon getIcon() {
+        return icon;
+    }
+
+    public void setIcon(Icon icon) {
+        this.icon = icon;
+    }
+
     public List<Category> getSubCategoryList() {
         return subCategoryList;
     }
@@ -141,6 +154,7 @@ public class Category extends CreatedUpdated implements Serializable {
                 Objects.equals(description, category.description) &&
                 Objects.equals(transactionList, category.transactionList) &&
                 Objects.equals(parentCategory, category.parentCategory) &&
+                Objects.equals(icon, category.icon) &&
                 Objects.equals(subCategoryList, category.subCategoryList);
     }
 

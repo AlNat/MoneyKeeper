@@ -12,7 +12,6 @@ public class BigDecimalUtil {
         return in.compareTo(BigDecimal.ZERO) > 0;
     }
 
-
     public static boolean isPositiveOrZero(BigDecimal in) {
         return in.compareTo(BigDecimal.ZERO) >= 0;
     }

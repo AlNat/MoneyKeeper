@@ -67,6 +67,24 @@ public class CategoryController {
     }
 
 
+    @Operation(summary = "Получение категории по идентификатору", description = "Кроме категории загружается еще и ее икона")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Запрос успешно выполнен"),
+            @ApiResponse(responseCode = "400", description = "Ошибка в запросе", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Категории с таким идентификатором не найдено", content = @Content),
+            @ApiResponse(responseCode = "401", description = "Запрос не авторизован", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Недостаточно прав для запроса", content = @Content),
+            @ApiResponse(responseCode = "500", description = "Ошибка при обработки запроса", content = @Content)
+    })
+    @RequestMapping(value = "/fetch/{categoryID}", method = RequestMethod.GET)
+    public Optional<Category> fetchCategoryByID(
+            @Parameter(description = "Идентификатор категории", required = true, example = "1")
+            @PathVariable
+                    Integer categoryID) {
+        return categoryService.fetch(categoryID);
+    }
+
+
     @Operation(summary = "Обновление категории")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Категория успешно обновлена"),
@@ -78,7 +96,7 @@ public class CategoryController {
     @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(value = "/", method = RequestMethod.PUT)
     public void updatedCategory(
-            @Parameter(description = "Измененная категория категория", required = true)
+            @Parameter(description = "Измененная категория", required = true)
             @RequestBody
                     Category category) {
         categoryService.create(category);

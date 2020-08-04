@@ -3,8 +3,11 @@ package dev.alnat.moneykeeper.service.impl;
 import dev.alnat.moneykeeper.dao.CategoryRepository;
 import dev.alnat.moneykeeper.exception.MoneyKeeperNotFoundException;
 import dev.alnat.moneykeeper.model.Category;
+import dev.alnat.moneykeeper.model.Icon;
 import dev.alnat.moneykeeper.service.CategoryService;
+import dev.alnat.moneykeeper.service.IconService;
 import dev.alnat.moneykeeper.util.StringUtil;
+import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,10 +33,20 @@ public class CategoryServiceImpl implements CategoryService {
     @Autowired
     private CategoryRepository categoryRepository;
 
+    @Autowired
+    private IconService iconService;
+
 
     @Override
     public Optional<Category> get(Integer categoryID) {
         return categoryRepository.findById(categoryID);
+    }
+
+    @Override
+    public Optional<Category> fetch(Integer categoryID) {
+        Optional<Category> c = get(categoryID);
+        c.ifPresent(category -> Hibernate.initialize(category.getIcon()));
+        return c;
     }
 
     @Override
@@ -78,6 +91,48 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public void delete(Integer categoryID) {
         categoryRepository.deleteById(categoryID);
+    }
+
+    @Override
+    public void setCategoryIcon(Integer categoryID, Integer iconID) throws MoneyKeeperNotFoundException {
+        Optional<Category> category = categoryRepository.findById(categoryID);
+        if (category.isEmpty()) {
+            log.error("Не найдено категории с идентификатором {}!", categoryID);
+            throw new MoneyKeeperNotFoundException("Не найдено категории с переданным идентификатором!");
+        }
+
+        Optional<Icon> icon = iconService.get(iconID);
+        if (icon.isEmpty()) {
+            log.error("Не найдено иконки с идентификатором {}!", iconID);
+            throw new MoneyKeeperNotFoundException("Не найдено иконки с переданным идентификатором!");
+        }
+
+
+        Category c = category.get();
+        c.setIcon(icon.get());
+
+        update(c);
+    }
+
+    @Override
+    public void setCategoryIcon(String key, Integer iconID) throws MoneyKeeperNotFoundException {
+        Optional<Category> category = categoryRepository.findCategoryByKey(key);
+        if (category.isEmpty()) {
+            log.error("Не найдено категории с идентификатором {}!", key);
+            throw new MoneyKeeperNotFoundException("Не найдено категории с переданным идентификатором!");
+        }
+
+        Optional<Icon> icon = iconService.get(iconID);
+        if (icon.isEmpty()) {
+            log.error("Не найдено иконки с идентификатором {}!", iconID);
+            throw new MoneyKeeperNotFoundException("Не найдено иконки с переданным идентификатором!");
+        }
+
+
+        Category c = category.get();
+        c.setIcon(icon.get());
+
+        update(c);
     }
 
     @Override

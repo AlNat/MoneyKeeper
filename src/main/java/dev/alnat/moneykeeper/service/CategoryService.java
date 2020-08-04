@@ -14,6 +14,8 @@ public interface CategoryService {
 
     Optional<Category> get(Integer categoryID);
 
+    Optional<Category> fetch(Integer categoryID);
+
     Optional<Category> getCategoryByKey(String key);
 
     List<Category> getAllCategory();
@@ -27,5 +29,9 @@ public interface CategoryService {
     void delete(Category category);
 
     void delete(Integer categoryID);
+
+    void setCategoryIcon(Integer categoryID, Integer iconID) throws MoneyKeeperNotFoundException;
+
+    void setCategoryIcon(String key, Integer iconID) throws MoneyKeeperNotFoundException;
 
 }
