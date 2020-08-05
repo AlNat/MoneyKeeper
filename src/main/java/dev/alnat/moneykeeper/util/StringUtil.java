@@ -64,7 +64,7 @@ public class StringUtil {
         alphabet.put('т', "t");
         alphabet.put('у', "u");
         alphabet.put('ф', "f");
-        alphabet.put('х', "x");
+        alphabet.put('х', "h");
         alphabet.put('ц', "cz");
         alphabet.put('ч', "ch");
         alphabet.put('ш', "sh");
@@ -97,13 +97,20 @@ public class StringUtil {
 
             if (alphabet.containsKey(c)) {
                 // Если после {ц} стоят буквы {и, й, е, ы}, то пишется {c}
+                // В остальных случаях пишется {cz}
                 if (c == 'ц') {
-                    char next = Character.toLowerCase(input.charAt(i + 1));
-                    if ((i < input.length() - 1) &&
-                            (next == 'и' || next == 'е' || next == 'й' || next == 'ы')) {
+                    // Если не последний символ
+                    if (i != input.length() - 1) {
+                        char next = Character.toLowerCase(input.charAt(i + 1));
+                        if ((i < input.length() - 1) &&
+                                (next == 'и' || next == 'е' || next == 'й' || next == 'ы' || !Character.isAlphabetic(next))) {
+                            dst.append(upperCase ? "C" : "c");
+                            continue;
+                        }
+                    } else {
                         dst.append(upperCase ? "C" : "c");
                         continue;
-                    } // В остальных случаях пишется {cz}
+                    }
                 }
 
                 dst.append(upperCase ? alphabet.get(c).toUpperCase() : alphabet.get(c));
@@ -124,7 +131,8 @@ public class StringUtil {
      * @return сформированный идентификатор
      */
     public static String generateKey(String name) {
-        return transliterate(name.toLowerCase().replaceAll(" ", "_"));
+        return transliterate(name.toLowerCase().replaceAll(" ", "_"))
+                .replaceAll("'", "");
     }
 
 }
