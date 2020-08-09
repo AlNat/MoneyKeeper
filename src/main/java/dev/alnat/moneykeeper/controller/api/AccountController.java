@@ -1,23 +1,32 @@
 package dev.alnat.moneykeeper.controller.api;
 
+import dev.alnat.moneykeeper.dto.AccountInfo;
+import dev.alnat.moneykeeper.exception.MoneyKeeperException;
 import dev.alnat.moneykeeper.model.Account;
 import dev.alnat.moneykeeper.model.enums.AccountTypeEnum;
 import dev.alnat.moneykeeper.service.AccountService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by @author AlNat on 26.07.2020.
  * Licensed by Apache License, Version 2.0
  */
+@Tag(name = "Account API",
+        description = "REST API для взаимодействия со счетами")
 @RestController
 @RequestMapping(value = "/api/account", produces = {"application/json", "application/xml"})
 public class AccountController {
@@ -54,7 +63,7 @@ public class AccountController {
             @ApiResponse(responseCode = "500", description = "Ошибка при обработки запроса", content = @Content)
     })
     @RequestMapping(value = "/{accountID}", method = RequestMethod.GET)
-    public Account getAccountByID(
+    public Optional<Account> getAccountByID(
             @Parameter(description = "Идентификатор счета", required = true, example = "1")
             @PathVariable
                     Integer accountID) {
@@ -72,11 +81,29 @@ public class AccountController {
             @ApiResponse(responseCode = "500", description = "Ошибка при обработки запроса", content = @Content)
     })
     @RequestMapping(value = "/search", method = RequestMethod.GET)
-    public Account getAccountByName(
+    public Optional<Account> getAccountByName(
             @Parameter(description = "Имя счет", required = true, example = "card")
             @RequestParam
                     String accountName) {
-        return accountService.getAccountByName(accountName);
+        return accountService.getAccountByKey(accountName);
+    }
+
+
+    @Operation(summary = "Обновление информации по счету")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Счет успешно обновлен"),
+            @ApiResponse(responseCode = "400", description = "Ошибка в запросе"),
+            @ApiResponse(responseCode = "401", description = "Запрос не авторизован"),
+            @ApiResponse(responseCode = "403", description = "Недостаточно прав для запроса"),
+            @ApiResponse(responseCode = "500", description = "Ошибка при обработки запроса")
+    })
+    @ResponseStatus(HttpStatus.CREATED)
+    @RequestMapping(value = "/", method = RequestMethod.PUT)
+    public void updatedAccount(
+            @Parameter(description = "Измененный счет", required = true)
+            @RequestBody
+                    Account account) {
+        accountService.update(account);
     }
 
 
@@ -98,7 +125,7 @@ public class AccountController {
     }
 
 
-    @Operation(summary = "Создание нового счета")
+    @Operation(summary = "Создание нового счета по парамнтрам")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Счет успешно создан"),
             @ApiResponse(responseCode = "400", description = "Ошибка в запросе"),
@@ -109,16 +136,19 @@ public class AccountController {
     @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(value = "/custom", method = RequestMethod.POST)
     public void addAccount(
+            @Parameter(description = "Идентификатор счета", required = false, example = "test_account")
+            @RequestParam(required = false)
+                    String key,
             @Parameter(description = "Имя счета", required = true, example = "Тестовый счет")
             @RequestParam
                     String name,
             @Parameter(description = "Описание счета", required = false, example = "Тестовый счет для тестирования")
-            @RequestParam
+            @RequestParam(required = false)
                     String description,
             @Parameter(description = "Тип счета", required = true, example = "CASH")
             @RequestParam
                     AccountTypeEnum type) {
-        accountService.create(name, description, type);
+        accountService.create(key, name, description, type);
     }
 
 
@@ -138,5 +168,59 @@ public class AccountController {
                     Integer accountID) {
         accountService.delete(accountID);
     }
+
+
+    @Operation(summary = "Получение агрегированной информации по счету")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Запрос успешно выполнен"),
+            @ApiResponse(responseCode = "400", description = "Ошибка в запросе", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Счет с таким идентификатором не найдено", content = @Content),
+            @ApiResponse(responseCode = "401", description = "Запрос не авторизован", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Недостаточно прав для запроса", content = @Content),
+            @ApiResponse(responseCode = "500", description = "Ошибка при обработки запроса", content = @Content)
+    })
+    @RequestMapping(value = "/info/{accountID}", method = RequestMethod.GET)
+    public AccountInfo getAccountInfo(
+            @Parameter(description = "Идентификатор счета", required = true, example = "1")
+            @PathVariable
+                    Integer accountID,
+            @Parameter(description = "Дата начала выборки", required = true, example = "2020-01-01")
+            @RequestParam
+            @DateTimeFormat(pattern = "yyyy-MM-dd")
+                    LocalDate from,
+            @Parameter(description = "Дата завершения выборки", required = true, example = "2020-01-02",
+                    schema = @Schema)
+            @RequestParam
+            @DateTimeFormat(pattern = "yyyy-MM-dd")
+                    LocalDate to) throws MoneyKeeperException {
+        return accountService.getAccountInfo(accountID, from, to);
+    }
+
+    @Operation(summary = "Получение агрегированной информации по счету")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Запрос успешно выполнен"),
+            @ApiResponse(responseCode = "400", description = "Ошибка в запросе", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Счет с таким идентификатором не найдено", content = @Content),
+            @ApiResponse(responseCode = "401", description = "Запрос не авторизован", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Недостаточно прав для запроса", content = @Content),
+            @ApiResponse(responseCode = "500", description = "Ошибка при обработки запроса", content = @Content)
+    })
+    @RequestMapping(value = "/info/", method = RequestMethod.GET)
+    public AccountInfo getAccountInfo(
+            @Parameter(description = "Идентификатор счета", required = true, example = "1")
+            @RequestParam
+                    String accountKey,
+            @Parameter(description = "Дата начала выборки", required = true, example = "2020-01-01")
+            @RequestParam
+            @DateTimeFormat(pattern = "yyyy-MM-dd")
+                    LocalDate from,
+            @Parameter(description = "Дата завершения выборки", required = true, example = "2020-01-02",
+                    schema = @Schema)
+            @RequestParam
+            @DateTimeFormat(pattern = "yyyy-MM-dd")
+                    LocalDate to) throws MoneyKeeperException {
+        return accountService.getAccountInfo(accountKey, from, to);
+    }
+
 
 }

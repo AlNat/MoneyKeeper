@@ -9,15 +9,18 @@ import dev.alnat.moneykeeper.model.Transaction;
 import dev.alnat.moneykeeper.model.enums.TransactionStatusEnum;
 import dev.alnat.moneykeeper.model.enums.TransactionTypeEnum;
 import dev.alnat.moneykeeper.util.StringUtil;
-import org.hibernate.annotations.QueryHints;
+import org.hibernate.Session;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by @author AlNat on 26.07.2020.
@@ -26,17 +29,21 @@ import java.util.List;
 @Repository
 public class TransactionRepositoryImpl implements TransactionRepository {
 
+    @Autowired
     @PersistenceContext
-    private final EntityManager entityManager;
-
-    public TransactionRepositoryImpl(EntityManager entityManager) {
-        this.entityManager = entityManager;
-    }
+    private EntityManager entityManager;
 
 
     @Override
     public void create(Transaction transaction) {
         entityManager.persist(transaction);
+    }
+
+    @Override
+    public void update(Transaction transaction) {
+        entityManager
+                .unwrap(Session.class)
+                .saveOrUpdate(transaction);
     }
 
     @Override
@@ -47,31 +54,61 @@ public class TransactionRepositoryImpl implements TransactionRepository {
     @Override
     public void delete(Integer transactionID) {
         entityManager
-                .createQuery("DELETE FROM Transaction WHERE transactionID = :id")
+                .unwrap(Session.class)
+                .createQuery("DELETE Transaction WHERE transactionID = :id", Transaction.class)
                 .setParameter("id", transactionID)
-                .setHint(QueryHints.READ_ONLY, true)
                 .executeUpdate();
     }
 
     @Override
-    public Transaction getByID(Integer transactionID) {
-        return entityManager.find(Transaction.class, transactionID);
+    public Optional<Transaction> getByID(Integer transactionID) {
+        return Optional.ofNullable(entityManager.unwrap(Session.class) // Для получение Optional лучше брать сессию от Hibernate
+                .get(Transaction.class, transactionID));
     }
 
     @Override
     public List<Transaction> getAll() {
         return entityManager
-                .createQuery("SELECT t FROM Transaction t", Transaction.class)
-                .setHint(QueryHints.READ_ONLY, true)
+                .unwrap(Session.class)
+                .createQuery("FROM Transaction", Transaction.class)
+                .setReadOnly(true)
                 .getResultList();
     }
 
     @Override
     public List<Transaction> getTransactionsByAccount(Account account) {
         return entityManager
-                .createQuery("SELECT t FROM Transaction t WHERE t.account = :account", Transaction.class)
+                .unwrap(Session.class)
+                .createQuery("FROM Transaction WHERE account = :account", Transaction.class)
                 .setParameter("account", account)
-                .setHint(QueryHints.READ_ONLY, true)
+                .setReadOnly(true)
+                .getResultList();
+    }
+
+
+    @Override
+    public List<Transaction> getTransactionsByAccount(Account account, LocalDate from, LocalDate to) {
+        return entityManager
+                .unwrap(Session.class)
+                .createQuery("FROM Transaction WHERE account = :account " +
+                        "AND processDate >= :from AND processDate <= :to", Transaction.class)
+                .setParameter("account", account)
+                .setParameter("from", from.atStartOfDay())
+                .setParameter("to", to.atStartOfDay().plusDays(1).minusNanos(1))
+                .setReadOnly(true)
+                .getResultList();
+    }
+
+    @Override
+    public List<Transaction> getTransactionsByAccount(Account account, LocalDateTime from, LocalDateTime to) {
+        return entityManager
+                .unwrap(Session.class)
+                .createQuery("FROM Transaction WHERE account = :account " +
+                        "AND processDate >= :from AND processDate <= :to", Transaction.class)
+                .setParameter("account", account)
+                .setParameter("from", from)
+                .setParameter("to", to)
+                .setReadOnly(true)
                 .getResultList();
     }
 
@@ -85,13 +122,13 @@ public class TransactionRepositoryImpl implements TransactionRepository {
 
 
         // Если есть фильтр по категориям
-        if (filter.getCategoriesNameList() != null && !filter.getCategoriesNameList().isEmpty()) {
+        if (filter.getCategoryKeyList() != null && !filter.getCategoryKeyList().isEmpty()) {
             Join<Transaction, Category> categoryJoin = root.join("account", JoinType.LEFT); // Join таблиц Transaction и Category
-            conditions.add(categoryJoin.<String>get("name").in(filter.getCategoriesNameList()));
+            conditions.add(categoryJoin.<String>get("key").in(filter.getCategoryKeyList()));
         }
 
         // Если есть фильтрация по номеру кошелька или по списку имен кошельков
-        if (filter.getAccountID() != null || (filter.getAccountNameList() != null && !filter.getAccountNameList().isEmpty())) {
+        if (filter.getAccountID() != null || (filter.getAccountKeyList() != null && !filter.getAccountKeyList().isEmpty())) {
             Join<Transaction, Account> accountJoin = root.join("account", JoinType.LEFT); // Join таблиц Transaction и Account
             // Ключ он подберет сам, но на всякий случай - transactionJoin.on(criteriaBuilder.equal(root.get("account"), transactionJoin.get("accountID")));
 
@@ -99,8 +136,8 @@ public class TransactionRepositoryImpl implements TransactionRepository {
                 conditions.add(criteriaBuilder.equal(accountJoin.<Integer>get("accountID"), filter.getAccountID()));
             }
 
-            if (filter.getAccountNameList() != null && !filter.getAccountNameList().isEmpty()) {
-                conditions.add(accountJoin.<String>get("name").in(filter.getAccountNameList()));
+            if (filter.getAccountKeyList() != null && !filter.getAccountKeyList().isEmpty()) {
+                conditions.add(accountJoin.<String>get("key").in(filter.getAccountKeyList()));
             }
         }
 
@@ -116,22 +153,24 @@ public class TransactionRepositoryImpl implements TransactionRepository {
 
         // Дата начала выборки
         if (filter.getFrom() != null) {
-            conditions.add(criteriaBuilder.greaterThanOrEqualTo(root.<LocalDateTime>get("processDate"), filter.getFrom()));
+            conditions.add(criteriaBuilder.greaterThanOrEqualTo(root.get("processDate"), filter.getFrom()));
         }
 
         // Дата окончания выборки
         if (filter.getTo() != null) {
-            conditions.add(criteriaBuilder.lessThanOrEqualTo(root.<LocalDateTime>get("processDate"), filter.getTo()));
+            conditions.add(criteriaBuilder.lessThanOrEqualTo(root.get("processDate"), filter.getTo()));
         }
 
 
         CriteriaQuery<Transaction> criteriaQuery = transactionCriteriaQuery.select(root); // Откуда выбирать данные
 
         Expression<?> orderExpression;
-        Order order = null;
+        Order order;
         if (filter.getSortingList() != null && filter.getSortingList().size() > 0) {
             for (Sorting sorting : filter.getSortingList()) {
-                if (StringUtil.isNullOrEmpty(sorting.getSortBy()))  continue;
+                if (StringUtil.isNullOrEmpty(sorting.getSortBy())) {
+                    continue;
+                }
                 orderExpression = root.get(sorting.getSortBy());
 
                 if (sorting.getSortOrder() == null || sorting.getSortOrder() == Sorting.SortOrder.ASC) {
@@ -145,11 +184,15 @@ public class TransactionRepositoryImpl implements TransactionRepository {
         }
 
         criteriaQuery = criteriaQuery.where(criteriaBuilder.and( // Устанавливаем условия where
-                conditions.toArray(new Predicate[conditions.size()])
+                conditions.toArray(new Predicate[0])
                 )
         ).orderBy(orderList);
 
-        return entityManager.createQuery(criteriaQuery).setHint(QueryHints.READ_ONLY, true).getResultList();
+        return entityManager
+                .unwrap(Session.class)
+                .createQuery(criteriaQuery)
+                .setReadOnly(true)
+                .getResultList();
     }
 
 }

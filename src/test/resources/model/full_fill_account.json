@@ -1,0 +1,8 @@
+{
+  "accountID": 123,
+  "created": "2020-10-10 12:12:12.000",
+  "updated": "2020-10-10 12:12:12.000",
+  "key": "test_key",
+  "balance": 0.00,
+  "type": "CARD"
+}
