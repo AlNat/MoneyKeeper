@@ -6,13 +6,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 /**
  * Базовый тест инициализации контекста
  *
+ * TODO Доразбираться в этом!!!
  * TODO Сделать тестовую конфигурацию
- *
  */
-@SpringBootTest
+//@SpringBootTest
 class MoneyKeeperApplicationTests {
 
-	@Test
+//	@Test
 	void contextLoads() {
 	}
 
