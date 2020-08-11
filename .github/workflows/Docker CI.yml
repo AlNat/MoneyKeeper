@@ -62,4 +62,4 @@ jobs:
       - name: Publish image
         env:
           IMAGE_NAME: alnat/httpstatusmocker:latest
-        run: docker push "docker.pkg.github.com/alnat/httpstatusmocker/${{ steps.global_env.outputs.IMAGE_NAME }}"
+        run: docker push "docker.pkg.github.com/alnat/moneykeeper/${{ steps.global_env.outputs.IMAGE_NAME }}"
