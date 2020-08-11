@@ -4,7 +4,7 @@
 ![GitHub commit activity](https://img.shields.io/github/commit-activity/w/alnat/MoneyKeeper) \
 [![CI](https://github.com/AlNat/MoneyKeeper/workflows/CI/badge.svg)](https://github.com/AlNat/MoneyKeeper/actions)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=MoneyKeeper&metric=alert_status)](https://sonarcloud.io/dashboard?id=MoneyKeeper) \
-[![Swagger API](http://validator.swagger.io/validator?url=https://raw.githubusercontent.com/AlNat/MoneyKeeper/master/docs/swagger.json)](https://alnat.github.io/MoneyKeeper/)
+OpenAPI: [![Swagger API](http://validator.swagger.io/validator?url=https://raw.githubusercontent.com/AlNat/MoneyKeeper/master/docs/swagger.json)](https://alnat.github.io/MoneyKeeper/)
 
 
 Небольшое приложение для учета личных финансов.
