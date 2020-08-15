@@ -4,7 +4,7 @@
 ![GitHub commit activity](https://img.shields.io/github/commit-activity/w/alnat/MoneyKeeper) \
 [![CI](https://github.com/AlNat/MoneyKeeper/workflows/CI/badge.svg)](https://github.com/AlNat/MoneyKeeper/actions)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=MoneyKeeper&metric=alert_status)](https://sonarcloud.io/dashboard?id=MoneyKeeper) \
-[![Swagger API](http://validator.swagger.io/validator?url=https://raw.githubusercontent.com/AlNat/MoneyKeeper/master/docs/swagger.json)](https://alnat.github.io/MoneyKeeper/)
+OpenAPI: [![Swagger API](http://validator.swagger.io/validator?url=https://raw.githubusercontent.com/AlNat/MoneyKeeper/master/docs/swagger.json)](https://alnat.github.io/MoneyKeeper/)
 
 
 Небольшое приложение для учета личных финансов.
@@ -13,6 +13,24 @@
 Чуть более расширенный вариант Excel файла для хранения и обработки всех трат и поступлений в разрезе нескольких кошельков.
 
 План разработки и список запланированных\реализованных фич представлен в файле `TODO`.
+
+
+### Запуск
+
+1. Развернуть БД на сервере, выполнить инициализационные скрипты, создать пользователя и выдать ему права.
+
+1. Получить актуальный Docker образ из [packages](https://github.com/AlNat/MoneyKeeper/packages)
+    
+    ```shell script
+    docker login https://docker.pkg.github.com -u GITHUB_USERNAME -p TOKEN_WITH_READ_AND_WRITE_ACCESS
+    docker pull docker.pkg.github.com/alnat/moneykeeper/moneykeeper:latest
+    ```
+
+1. Запустить приложение в докере, передав в контейнер параметры соединения с БД
+
+    ```shell script
+    docker run -p 3000:8090 docker.pkg.github.com/alnat/moneykeeper/moneykeeper:latest --spring.datasource.username=postgres --spring.datasource.password=postgres
+    ```
 
 
 ## Технологии

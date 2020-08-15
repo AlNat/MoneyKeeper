@@ -12,7 +12,7 @@
 
 	<groupId>dev.alnat</groupId>
 	<artifactId>moneykeeper</artifactId>
-	<version>0.0.1</version>
+	<version>1</version>
 	<packaging>jar</packaging>
 
 	<name>MoneyKeeper</name>
@@ -114,6 +114,17 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>repackage</id>
+						<goals>
+							<goal>repackage</goal>
+						</goals>
+						<configuration>
+							<finalName>moneykeeper</finalName>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
