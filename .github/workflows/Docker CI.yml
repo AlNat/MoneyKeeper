@@ -5,7 +5,6 @@ on:
   push:
     branches:
       - 'master'
-      - 'feature/docker' # TODO УДАЛИТЬ ПОСЛЕ ТЕСТИРОВАНИЯ!
 
 
 jobs:
