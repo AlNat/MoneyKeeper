@@ -15,6 +15,24 @@ OpenAPI: [![Swagger API](http://validator.swagger.io/validator?url=https://raw.g
 План разработки и список запланированных\реализованных фич представлен в файле `TODO`.
 
 
+### Запуск
+
+1. Развернуть БД на сервере, выполнить инициализационные скрипты, создать пользователя и выдать ему права.
+
+1. Получить актуальный Docker образ из [packages](https://github.com/AlNat/MoneyKeeper/packages)
+    
+    ```shell script
+    docker login https://docker.pkg.github.com -u GITHUB_USERNAME -p TOKEN_WITH_READ_AND_WRITE_ACCESS
+    docker pull docker.pkg.github.com/alnat/moneykeeper/moneykeeper:latest
+    ```
+
+1. Запустить приложение в докере, передав в контейнер параметры соединения с БД
+
+    ```shell script
+    docker run -p 3000:8090 docker.pkg.github.com/alnat/moneykeeper/moneykeeper:latest --spring.datasource.username=postgres --spring.datasource.password=postgres
+    ```
+
+
 ## Технологии
 
 ### Стек
