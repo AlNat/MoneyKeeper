@@ -4,10 +4,13 @@ import dev.alnat.moneykeeper.dto.APIError;
 import dev.alnat.moneykeeper.exception.MoneyKeeperException;
 import dev.alnat.moneykeeper.exception.MoneyKeeperIllegalArgumentException;
 import dev.alnat.moneykeeper.exception.MoneyKeeperNotFoundException;
+import dev.alnat.moneykeeper.model.User;
 import dev.alnat.moneykeeper.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -51,6 +54,25 @@ public class MoneyKeeperExceptionHandler {
     public @ResponseBody APIError handleException(MoneyKeeperException e) {
         log.error("{}", StringUtil.getStackTrace(e));
         return APIError.of(e.getMessage());
+    }
+
+    // Перехват ошибки о том, что у пользователя недостаточно прав
+    @ExceptionHandler(AccessDeniedException.class)
+    @ResponseStatus(value = HttpStatus.FORBIDDEN)
+    public void handleAccessDeniedException(AccessDeniedException e) {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        String method = null;
+        String clazz = null;
+        for (StackTraceElement stackTraceElement : e.getStackTrace()) {
+            if (stackTraceElement.getClassName().startsWith("dev.alnat")) {
+                clazz = stackTraceElement.getClassName();
+                method = stackTraceElement.getMethodName();
+                break;
+            }
+        }
+
+        log.warn("Пользователь {} пытается получить доступ к методу {} в классе {}", user.getUsername(), method, clazz);
     }
 
 
