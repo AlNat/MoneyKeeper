@@ -81,11 +81,11 @@ public class AccountController {
             @ApiResponse(responseCode = "500", description = "Ошибка при обработки запроса", content = @Content)
     })
     @RequestMapping(value = "/search", method = RequestMethod.GET)
-    public Optional<Account> getAccountByName(
-            @Parameter(description = "Имя счет", required = true, example = "card")
+    public Optional<Account> getAccountByKey(
+            @Parameter(description = "Идентификатор счета", required = true, example = "card")
             @RequestParam
-                    String accountName) {
-        return accountService.getAccountByKey(accountName);
+                    String accountKey) {
+        return accountService.getAccountByKey(accountKey);
     }
 
 
@@ -125,7 +125,7 @@ public class AccountController {
     }
 
 
-    @Operation(summary = "Создание нового счета по парамнтрам")
+    @Operation(summary = "Создание нового счета по параметрам")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Счет успешно создан"),
             @ApiResponse(responseCode = "400", description = "Ошибка в запросе"),
@@ -162,7 +162,7 @@ public class AccountController {
             @ApiResponse(responseCode = "500", description = "Ошибка при обработки запроса")
     })
     @RequestMapping(value = "/{accountID}", method = RequestMethod.DELETE)
-    public void deleteTransaction(
+    public void deleteAccount(
             @Parameter(description = "Идентификатор счета", required = true, example = "1")
             @PathVariable
                     Integer accountID) {
