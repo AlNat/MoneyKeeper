@@ -60,7 +60,20 @@ public class MoneyKeeperExceptionHandler {
     @ExceptionHandler(AccessDeniedException.class)
     @ResponseStatus(value = HttpStatus.FORBIDDEN)
     public void handleAccessDeniedException(AccessDeniedException e) {
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String userName;
+
+        Object obj = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (obj instanceof String && obj.equals("anonymousUser")) {
+            userName = "Неавторизованный пользователь";
+        } else {
+            if (obj instanceof User) {
+                userName = "Пользователь " + ((User) obj).getUsername();
+            } else {
+                log.error("Неизвестный тип пользователя пытается получить доступ закрытом ресурсу!");
+                return;
+            }
+        }
+
 
         String method = null;
         String clazz = null;
@@ -72,7 +85,7 @@ public class MoneyKeeperExceptionHandler {
             }
         }
 
-        log.warn("Пользователь {} пытается получить доступ к методу {} в классе {}", user.getUsername(), method, clazz);
+        log.warn("{} пытается получить доступ к методу {} в классе {}", userName, method, clazz);
     }
 
 

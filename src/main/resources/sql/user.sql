@@ -49,8 +49,8 @@ VALUES
 
 -- Инициализация пользователей системы
 INSERT INTO "user"(enabled, username, password)
-VALUES (TRUE, 'administrator', '$2a$10$meZ4VE74LFY./11d/soxWesFGj5MBaSb2Zbps7sfoE.ZpINfTT7Di'),
-       (TRUE, 'user',          '$2a$10$meZ4VE74LFY./11d/soxWesFGj5MBaSb2Zbps7sfoE.ZpINfTT7Di');
+VALUES (TRUE, 'administrator', '$2a$10$qG4QgqcUzZiub5UCQqKZJ..Fm1jkhM8QIAi9d6/ZWEv3zVKRhEXNq'),
+       (TRUE, 'user',          '$2a$10$ZBbnxYCAWl.Os/ijHtouIOrLIe8LnCSf68REHlPBrOszaZEtukw2e');
 
 -- Добавляем пользователя в группу
 INSERT INTO user_usergroup(userid, usergroupid)

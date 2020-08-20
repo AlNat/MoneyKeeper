@@ -15,9 +15,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-
 /**
  * Created by @author AlNat on 20.07.2020.
  * Licensed by Apache License, Version 2.0
@@ -37,7 +34,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         http
                 .csrf().ignoringAntMatchers("/api/**").and() // Под все API запросы исключаем CSRF
                 .httpBasic().and() // На любой запрос - нужна авторизация, она - Basic
-//                .authorizeRequests().anyRequest().hasAnyRole("ROLE_USER").and() // Минимальная роль, которая нужна
+                .authorizeRequests().anyRequest().authenticated().and() // Любой запрос должен быть авторизован
                 .sessionManagement()
                     .maximumSessions(1).and()
                     .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED).and()
