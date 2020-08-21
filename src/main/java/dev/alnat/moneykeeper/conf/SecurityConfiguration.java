@@ -10,7 +10,6 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -34,14 +33,15 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         http
                 .csrf().ignoringAntMatchers("/api/**").and() // Под все API запросы исключаем CSRF
                 .httpBasic().and() // На любой запрос - нужна авторизация, она - Basic
-                .authorizeRequests().anyRequest().authenticated().and() // Любой запрос должен быть авторизован
-                .sessionManagement()
-                    .maximumSessions(1).and()
-                    .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED).and()
+                .authorizeRequests().antMatchers("/api/**").authenticated().and() // Любой запрос должен быть авторизован
                 .userDetailsService(userService); // Сервис, который отвечает за получение пользователей
 
         // TODO После UI добавить отдельную авторизацию
         //  Также сразу добавить AuthenticationSuccessHandler
+        //  И информация по сессиям:
+        //        .sessionManagement()
+        //        .maximumSessions(1).and()
+        //        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED).and()
     }
 
     @Bean

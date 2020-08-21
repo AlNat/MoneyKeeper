@@ -188,7 +188,7 @@ public class AccountController {
             @ApiResponse(responseCode = "500", description = "Ошибка при обработки запроса", content = @Content)
     })
     @PreAuthorize("hasAuthority('ACCOUNT')")
-    @RequestMapping(value = "/info/{accountID}", method = RequestMethod.GET)
+    @RequestMapping(value = "/info/{accountID}", params = "!accountKey", method = RequestMethod.GET)
     public AccountInfo getAccountInfo(
             @Parameter(description = "Идентификатор счета", required = true, example = "1")
             @PathVariable
@@ -197,8 +197,7 @@ public class AccountController {
             @RequestParam
             @DateTimeFormat(pattern = "yyyy-MM-dd")
                     LocalDate from,
-            @Parameter(description = "Дата завершения выборки", required = true, example = "2020-01-02",
-                    schema = @Schema)
+            @Parameter(description = "Дата завершения выборки", required = true, example = "2020-01-02")
             @RequestParam
             @DateTimeFormat(pattern = "yyyy-MM-dd")
                     LocalDate to) throws MoneyKeeperException {
@@ -215,7 +214,7 @@ public class AccountController {
             @ApiResponse(responseCode = "500", description = "Ошибка при обработки запроса", content = @Content)
     })
     @PreAuthorize("hasAuthority('ACCOUNT')")
-    @RequestMapping(value = "/info/", method = RequestMethod.GET)
+    @RequestMapping(value = "/info", params = "!accountID", method = RequestMethod.GET)
     public AccountInfo getAccountInfo(
             @Parameter(description = "Идентификатор счета", required = true, example = "1")
             @RequestParam
@@ -224,8 +223,7 @@ public class AccountController {
             @RequestParam
             @DateTimeFormat(pattern = "yyyy-MM-dd")
                     LocalDate from,
-            @Parameter(description = "Дата завершения выборки", required = true, example = "2020-01-02",
-                    schema = @Schema)
+            @Parameter(description = "Дата завершения выборки", required = true, example = "2020-01-02")
             @RequestParam
             @DateTimeFormat(pattern = "yyyy-MM-dd")
                     LocalDate to) throws MoneyKeeperException {

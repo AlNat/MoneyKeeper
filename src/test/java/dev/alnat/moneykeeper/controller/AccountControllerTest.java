@@ -1,10 +1,11 @@
 package dev.alnat.moneykeeper.controller;
 
 import dev.alnat.moneykeeper.controller.api.AccountController;
-import dev.alnat.moneykeeper.exception.MoneyKeeperNotFoundException;
+import dev.alnat.moneykeeper.dto.AccountInfo;
 import dev.alnat.moneykeeper.model.Account;
 import dev.alnat.moneykeeper.model.enums.AccountTypeEnum;
 import dev.alnat.moneykeeper.service.AccountService;
+import dev.alnat.moneykeeper.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Collections;
@@ -33,7 +35,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @see dev.alnat.moneykeeper.model.AccountJSONTest
  *
  * Общий процесс тестирования построен через BDD,
- * но иногда в классиечском стиле
+ * но иногда в классическом стиле
  *
  * Created by @author AlNat on 05.08.2020.
  * Licensed by Apache License, Version 2.0
@@ -44,6 +46,10 @@ public class AccountControllerTest {
     @MockBean
     private AccountService service;
 
+    // Мокаем бин для обеспечения доступа к Security
+    @MockBean
+    private UserService userService;
+
     @Autowired
     private MockMvc mockMvc;
 
@@ -51,6 +57,7 @@ public class AccountControllerTest {
     private Account testAccount;
 
     private String testAccountInJSON;
+
 
     @BeforeEach
     void init() {
@@ -74,6 +81,7 @@ public class AccountControllerTest {
      * Счет получается по его ID и возвращается в теле ответа с кодом 200
      */
     @Test
+    @WithMockUser(authorities = "ACCOUNT")
     @DisplayName("Тестирование успешного получения существующей сущности по ID")
     void testGetAccountWithID() throws Exception {
         given(service.get(42))
@@ -87,6 +95,7 @@ public class AccountControllerTest {
     }
 
     @Test
+    @WithMockUser(username = "test", roles = "USER", authorities = "ACCOUNT")
     @DisplayName("Тестирование получения несуществующей сущности по ID")
     void testNotFoundAccountWithID() throws Exception {
         given(service.get(any()))
@@ -98,6 +107,7 @@ public class AccountControllerTest {
     }
 
     @Test
+    @WithMockUser(username = "test", roles = "USER", authorities = "ACCOUNT_LIST")
     @DisplayName("Тестирование получения несуществующей сущности по ID")
     void testGetAllAccount() throws Exception {
         given(service.getAccountList())
@@ -110,6 +120,7 @@ public class AccountControllerTest {
     }
 
     @Test
+    @WithMockUser(username = "test", roles = "USER", authorities = "ACCOUNT")
     @DisplayName("Тестирование получения сущности по идентификатору")
     void testSearchAccount() throws Exception {
         given(service.getAccountByKey("card"))
@@ -122,6 +133,7 @@ public class AccountControllerTest {
     }
 
     @Test
+    @WithMockUser(username = "test", roles = "USER", authorities = "ACCOUNT_CREATE")
     @DisplayName("Тестирование создание новой сущности переданной в теле запроса")
     void testCreateAccount() throws Exception {
         doNothing()
@@ -137,6 +149,7 @@ public class AccountControllerTest {
     }
 
     @Test
+    @WithMockUser(username = "test", roles = "USER", authorities = "ACCOUNT_CREATE")
     @DisplayName("Тестирование создание новой сущности переданной через параметры")
     void testCreateAccountByParams() throws Exception {
         doNothing()
@@ -153,6 +166,7 @@ public class AccountControllerTest {
     }
 
     @Test
+    @WithMockUser(username = "test", roles = "USER", authorities = "ACCOUNT_CREATE")
     @DisplayName("Тестирование ошибки создание новой сущности переданной через параметры")
     void testErrorCreateAccountByParams() throws Exception {
         mockMvc.perform(
@@ -164,6 +178,7 @@ public class AccountControllerTest {
     }
 
     @Test
+    @WithMockUser(username = "test", roles = "USER", authorities = "ACCOUNT_DELETE")
     @DisplayName("Тестирование удаления сущности")
     void testDeleteAccount() throws Exception {
         doNothing()
@@ -175,9 +190,42 @@ public class AccountControllerTest {
     }
 
     @Test
+    @WithMockUser(username = "test", roles = "USER", authorities = "ACCOUNT")
+    @DisplayName("Тестирование удаления сущности без прав на операцию")
+    void testDeleteAccountWithoutPermission() throws Exception {
+        doNothing()
+                .when(service)
+                .delete(anyInt());
+
+        mockMvc.perform(delete("/api/account/42"))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @DisplayName("Тестирование удаления сущности без любой авторизации")
+    void testDeleteAccountWithoutAuthorized() throws Exception {
+        doNothing()
+                .when(service)
+                .delete(anyInt());
+
+        mockMvc.perform(delete("/api/account/42"))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    @WithMockUser(username = "test", roles = "USER", authorities = "ACCOUNT")
     @DisplayName("Тестирование получения агрегированной информации по счету")
     void testGetAccountInfo() throws Exception {
-        // TODO
+        given(service.getAccountInfo(anyString(), any(), any()))
+                .willReturn(new AccountInfo());
+
+        mockMvc.perform(get("/api/account/info")
+                .queryParam("accountKey", "key")
+                .queryParam("from", "2020-01-01")
+                .queryParam("to", "2020-01-02")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
 
 }
