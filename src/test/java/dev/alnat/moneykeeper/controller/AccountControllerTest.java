@@ -134,7 +134,7 @@ public class AccountControllerTest {
 
     @Test
     @WithMockUser(username = "test", roles = "USER", authorities = "ACCOUNT_CREATE")
-    @DisplayName("Тестирование создание новой сущности переданной в теле запроса")
+    @DisplayName("Тестирование создание новой сущности переданной в теле запроса в JSON")
     void testCreateAccount() throws Exception {
         doNothing()
                 .when(service)
@@ -144,6 +144,28 @@ public class AccountControllerTest {
                 post("/api/account/")
                 .content(testAccountInJSON)
                 .contentType(MediaType.APPLICATION_JSON)
+        )
+                .andExpect(status().isCreated());
+    }
+
+
+    @Test
+    @WithMockUser(username = "test", roles = "USER", authorities = "ACCOUNT_CREATE")
+    @DisplayName("Тестирование создание новой сущности переданной в теле запроса в фо XML")
+    void testCreateAccountXML() throws Exception {
+        String testAccountInXML = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n" +
+                "<Account>\n" +
+                "  <accountID>12345</accountID>\n" +
+                "</Account>";
+
+        doNothing()
+                .when(service)
+                .create(any(Account.class));
+
+        mockMvc.perform(
+                post("/api/account/")
+                        .content(testAccountInXML)
+                        .contentType(MediaType.APPLICATION_XML)
         )
                 .andExpect(status().isCreated());
     }
@@ -187,29 +209,6 @@ public class AccountControllerTest {
 
         mockMvc.perform(delete("/api/account/42"))
                 .andExpect(status().isOk());
-    }
-
-    @Test
-    @WithMockUser(username = "test", roles = "USER", authorities = "ACCOUNT")
-    @DisplayName("Тестирование удаления сущности без прав на операцию")
-    void testDeleteAccountWithoutPermission() throws Exception {
-        doNothing()
-                .when(service)
-                .delete(anyInt());
-
-        mockMvc.perform(delete("/api/account/42"))
-                .andExpect(status().isForbidden());
-    }
-
-    @Test
-    @DisplayName("Тестирование удаления сущности без любой авторизации")
-    void testDeleteAccountWithoutAuthorized() throws Exception {
-        doNothing()
-                .when(service)
-                .delete(anyInt());
-
-        mockMvc.perform(delete("/api/account/42"))
-                .andExpect(status().isUnauthorized());
     }
 
     @Test

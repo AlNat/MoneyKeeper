@@ -16,6 +16,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -51,6 +52,7 @@ public class TransactionController {
             @ApiResponse(responseCode = "403", description = "Недостаточно прав для запроса", content = @Content),
             @ApiResponse(responseCode = "500", description = "Ошибка при обработки запроса", content = @Content)
     })
+    @PreAuthorize("hasAuthority('TRANSACTION_LIST')")
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public List<Transaction> getTransactionList() {
         return transactionService.getAllTransaction();
@@ -65,6 +67,7 @@ public class TransactionController {
             @ApiResponse(responseCode = "403", description = "Недостаточно прав для запроса", content = @Content),
             @ApiResponse(responseCode = "500", description = "Ошибка при обработки запроса", content = @Content)
     })
+    @PreAuthorize("hasAuthority('TRANSACTION_LIST')")
     @RequestMapping(value = "/account/", method = RequestMethod.GET, params = "accountKey")
     public List<Transaction> getTransactionList(
             @Parameter(description = "Идентификатор счета", required = true, example = "card")
@@ -84,6 +87,7 @@ public class TransactionController {
             @ApiResponse(responseCode = "403", description = "Недостаточно прав для запроса", content = @Content),
             @ApiResponse(responseCode = "500", description = "Ошибка при обработки запроса", content = @Content)
     })
+    @PreAuthorize("hasAuthority('TRANSACTION_LIST')")
     @RequestMapping(value = "/account/datetime", method = RequestMethod.GET, params = {"accountKey", "from", "to"})
     public List<Transaction> getTransactionList(
             @Parameter(description = "Имя счета", required = true, example = "card")
@@ -111,6 +115,7 @@ public class TransactionController {
             @ApiResponse(responseCode = "403", description = "Недостаточно прав для запроса", content = @Content),
             @ApiResponse(responseCode = "500", description = "Ошибка при обработки запроса", content = @Content)
     })
+    @PreAuthorize("hasAuthority('TRANSACTION_LIST')")
     @RequestMapping(value = "/account/date", method = RequestMethod.GET, params = {"accountKey", "dateFrom", "dateTo"})
     public List<Transaction> getTransactionList(
             @Parameter(description = "Имя счета", required = true, example = "card")
@@ -138,6 +143,7 @@ public class TransactionController {
             @ApiResponse(responseCode = "403", description = "Недостаточно прав для запроса", content = @Content),
             @ApiResponse(responseCode = "500", description = "Ошибка при обработки запроса", content = @Content)
     })
+    @PreAuthorize("hasAuthority('TRANSACTION')")
     @RequestMapping(value = "/{transactionID}", method = RequestMethod.GET)
     public Optional<Transaction> getTransactionByID(
             @Parameter(description = "Идентификатор транзакции", required = true, example = "1")
@@ -155,6 +161,7 @@ public class TransactionController {
             @ApiResponse(responseCode = "403", description = "Недостаточно прав для запроса"),
             @ApiResponse(responseCode = "500", description = "Ошибка при обработки запроса")
     })
+    @PreAuthorize("hasAuthority('TRANSACTION_CHANGE')")
     @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(value = "/", method = RequestMethod.PUT)
     public void updateTransaction(
@@ -173,6 +180,7 @@ public class TransactionController {
             @ApiResponse(responseCode = "403", description = "Недостаточно прав для запроса"),
             @ApiResponse(responseCode = "500", description = "Ошибка при обработки запроса")
     })
+    @PreAuthorize("hasAuthority('TRANSACTION_CREATE')")
     @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(value = "/", method = RequestMethod.POST)
     public void addTransaction(
@@ -191,6 +199,7 @@ public class TransactionController {
             @ApiResponse(responseCode = "403", description = "Недостаточно прав для запроса"),
             @ApiResponse(responseCode = "500", description = "Ошибка при обработки запроса")
     })
+    @PreAuthorize("hasAuthority('TRANSACTION_CREATE')")
     @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(value = "/custom", method = RequestMethod.POST)
     public void addTransaction(
@@ -229,6 +238,7 @@ public class TransactionController {
             @ApiResponse(responseCode = "403", description = "Недостаточно прав для запроса"),
             @ApiResponse(responseCode = "500", description = "Ошибка при обработки запроса")
     })
+    @PreAuthorize("hasAuthority('TRANSACTION_DELETE')")
     @RequestMapping(value = "/{transactionID}", method = RequestMethod.DELETE)
     public void deleteTransaction(
             @Parameter(description = "Идентификатор транзакции", required = true, example = "1")
@@ -246,6 +256,7 @@ public class TransactionController {
             @ApiResponse(responseCode = "403", description = "Недостаточно прав для запроса", content = @Content),
             @ApiResponse(responseCode = "500", description = "Ошибка при обработки запроса", content = @Content)
     })
+    @PreAuthorize("hasAuthority('TRANSACTION_LIST')")
     @RequestMapping(value = "/search", method = RequestMethod.POST)
     public List<Transaction> getTransactionListByFilter(
             @Parameter(description = "Фильтр поиска", required = true, example = "123")

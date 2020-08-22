@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -44,6 +45,7 @@ public class IconController {
             @ApiResponse(responseCode = "403", description = "Недостаточно прав для запроса", content = @Content),
             @ApiResponse(responseCode = "500", description = "Ошибка при обработки запроса", content = @Content)
     })
+    @PreAuthorize("hasAuthority('CATEGORY')")
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public List<Icon> getIconList() {
         return iconService.getAllIcon();
@@ -59,6 +61,7 @@ public class IconController {
             @ApiResponse(responseCode = "403", description = "Недостаточно прав для запроса", content = @Content),
             @ApiResponse(responseCode = "500", description = "Ошибка при обработки запроса", content = @Content)
     })
+    @PreAuthorize("hasAuthority('CATEGORY')")
     @RequestMapping(value = "/{iconID}", method = RequestMethod.GET)
     public Optional<Icon> getIconByID(
             @Parameter(description = "Идентификатор иконки", required = true, example = "1")
@@ -76,6 +79,7 @@ public class IconController {
             @ApiResponse(responseCode = "403", description = "Недостаточно прав для запроса", content = @Content),
             @ApiResponse(responseCode = "500", description = "Ошибка при обработки запроса", content = @Content)
     })
+    @PreAuthorize("hasAuthority('CATEGORY_CHANGE')")
     @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(value = "/", method = RequestMethod.PUT)
     public void updatedIcon(
@@ -94,6 +98,7 @@ public class IconController {
             @ApiResponse(responseCode = "403", description = "Недостаточно прав для запроса", content = @Content),
             @ApiResponse(responseCode = "500", description = "Ошибка при обработки запроса", content = @Content)
     })
+    @PreAuthorize("hasAuthority('CATEGORY_CREATE')")
     @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(value = "/", method = RequestMethod.POST)
     public void addIcon(
@@ -120,6 +125,7 @@ public class IconController {
             @ApiResponse(responseCode = "403", description = "Недостаточно прав для запроса"),
             @ApiResponse(responseCode = "500", description = "Ошибка при обработки запроса")
     })
+    @PreAuthorize("hasAuthority('CATEGORY_DELETE')")
     @RequestMapping(value = "/{iconID}", method = RequestMethod.DELETE)
     public void deleteIcon(
             @Parameter(description = "Идентификатор иконки", required = true, example = "1")

@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -43,6 +44,7 @@ public class CategoryController {
             @ApiResponse(responseCode = "403", description = "Недостаточно прав для запроса", content = @Content),
             @ApiResponse(responseCode = "500", description = "Ошибка при обработки запроса", content = @Content)
     })
+    @PreAuthorize("hasAuthority('CATEGORY')")
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public List<Category> getCategoryList() {
         return categoryService.getAllCategory();
@@ -58,6 +60,7 @@ public class CategoryController {
             @ApiResponse(responseCode = "403", description = "Недостаточно прав для запроса", content = @Content),
             @ApiResponse(responseCode = "500", description = "Ошибка при обработки запроса", content = @Content)
     })
+    @PreAuthorize("hasAuthority('CATEGORY')")
     @RequestMapping(value = "/{categoryID}", method = RequestMethod.GET)
     public Optional<Category> getCategoryByID(
             @Parameter(description = "Идентификатор категории", required = true, example = "1")
@@ -76,6 +79,7 @@ public class CategoryController {
             @ApiResponse(responseCode = "403", description = "Недостаточно прав для запроса", content = @Content),
             @ApiResponse(responseCode = "500", description = "Ошибка при обработки запроса", content = @Content)
     })
+    @PreAuthorize("hasAuthority('CATEGORY')")
     @RequestMapping(value = "/fetch/{categoryID}", method = RequestMethod.GET)
     public Optional<Category> fetchCategoryByID(
             @Parameter(description = "Идентификатор категории", required = true, example = "1")
@@ -93,6 +97,7 @@ public class CategoryController {
             @ApiResponse(responseCode = "403", description = "Недостаточно прав для запроса"),
             @ApiResponse(responseCode = "500", description = "Ошибка при обработки запроса")
     })
+    @PreAuthorize("hasAuthority('CATEGORY_CHANGE')")
     @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(value = "/", method = RequestMethod.PUT)
     public void updatedCategory(
@@ -110,6 +115,7 @@ public class CategoryController {
             @ApiResponse(responseCode = "403", description = "Недостаточно прав для запроса"),
             @ApiResponse(responseCode = "500", description = "Ошибка при обработки запроса")
     })
+    @PreAuthorize("hasAuthority('CATEGORY_CREATE')")
     @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(value = "/", method = RequestMethod.POST)
     public void addCategory(
@@ -128,6 +134,7 @@ public class CategoryController {
             @ApiResponse(responseCode = "403", description = "Недостаточно прав для запроса"),
             @ApiResponse(responseCode = "500", description = "Ошибка при обработки запроса")
     })
+    @PreAuthorize("hasAuthority('CATEGORY_CREATE')")
     @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(value = "/custom", method = RequestMethod.POST)
     public void addCategory(
@@ -156,6 +163,7 @@ public class CategoryController {
             @ApiResponse(responseCode = "403", description = "Недостаточно прав для запроса"),
             @ApiResponse(responseCode = "500", description = "Ошибка при обработки запроса")
     })
+    @PreAuthorize("hasAuthority('CATEGORY_DELETE')")
     @RequestMapping(value = "/{categoryID}", method = RequestMethod.DELETE)
     public void deleteCategory(
             @Parameter(description = "Идентификатор категории", required = true, example = "1")
