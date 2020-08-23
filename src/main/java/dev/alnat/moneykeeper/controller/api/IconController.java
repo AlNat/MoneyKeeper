@@ -26,15 +26,19 @@ import java.util.Optional;
  * Licensed by Apache License, Version 2.0
  */
 @Tag(name = "Icon API",
-        description = "REST API для взаимодействия с икноками категорий")
+        description = "REST API для взаимодействия с иконками категорий")
 @RestController
 @RequestMapping(value = "/api/icon")
 public class IconController {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
+    private final IconService iconService;
+
     @Autowired
-    private IconService iconService;
+    public IconController(IconService iconService) {
+        this.iconService = iconService;
+    }
 
 
     @Operation(summary = "Получение списка иконок")
@@ -56,7 +60,7 @@ public class IconController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Запрос успешно выполнен"),
             @ApiResponse(responseCode = "400", description = "Ошибка в запросе", content = @Content),
-            @ApiResponse(responseCode = "404", description = "Икноки с таким идентификатором не найдено", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Иконки с таким идентификатором не найдено", content = @Content),
             @ApiResponse(responseCode = "401", description = "Запрос не авторизован", content = @Content),
             @ApiResponse(responseCode = "403", description = "Недостаточно прав для запроса", content = @Content),
             @ApiResponse(responseCode = "500", description = "Ошибка при обработки запроса", content = @Content)

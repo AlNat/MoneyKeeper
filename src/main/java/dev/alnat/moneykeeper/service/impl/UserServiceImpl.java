@@ -2,6 +2,7 @@ package dev.alnat.moneykeeper.service.impl;
 
 import dev.alnat.moneykeeper.dao.UserRepository;
 import dev.alnat.moneykeeper.exception.MoneyKeeperException;
+import dev.alnat.moneykeeper.exception.MoneyKeeperIllegalArgumentException;
 import dev.alnat.moneykeeper.exception.MoneyKeeperNotFoundException;
 import dev.alnat.moneykeeper.model.User;
 import dev.alnat.moneykeeper.model.UserGroup;
@@ -117,7 +118,7 @@ public class UserServiceImpl implements UserService {
         // Если пользователь уже входит в эту группу - ошибка!
         if (user.getUserGroupList().contains(userGroup)) {
             log.error("Ошибка добавления пользователя {} к группе {} - он уже есть в ней!", user.getUsername(), userGroup.getKey());
-            throw new MoneyKeeperException(
+            throw new MoneyKeeperIllegalArgumentException(
                     String.format("Ошибка добавления пользователя %s к группе %s - он уже есть в ней!", user.getUsername(), userGroup.getKey())
             );
         }
@@ -162,7 +163,7 @@ public class UserServiceImpl implements UserService {
         // Если пользователь не входит в эту группу - ошибка!
         if (!user.getUserGroupList().contains(userGroup)) {
             log.error("Ошибка удаления пользователя {} из группы {} - он в ней не состоит!", user.getUsername(), userGroup.getKey());
-            throw new MoneyKeeperException(
+            throw new MoneyKeeperIllegalArgumentException(
                     String.format("Ошибка удаления пользователя %s из группы %s - он в ней не состоит!", user.getUsername(), userGroup.getKey())
             );
         }

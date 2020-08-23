@@ -17,7 +17,7 @@ public interface UserGroupService {
 
     Optional<UserGroup> get(String key);
 
-    List<UserGroup> getUserList();
+    List<UserGroup> getUserGroupList();
 
     void create(UserGroup userGroup);
 

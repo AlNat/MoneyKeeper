@@ -2,6 +2,7 @@ package dev.alnat.moneykeeper.service.impl;
 
 import dev.alnat.moneykeeper.dao.UserGroupRepository;
 import dev.alnat.moneykeeper.exception.MoneyKeeperException;
+import dev.alnat.moneykeeper.exception.MoneyKeeperIllegalArgumentException;
 import dev.alnat.moneykeeper.exception.MoneyKeeperNotFoundException;
 import dev.alnat.moneykeeper.model.UserGroup;
 import dev.alnat.moneykeeper.model.enums.UserOperation;
@@ -47,7 +48,7 @@ public class UserGroupServiceImpl implements UserGroupService {
     }
 
     @Override
-    public List<UserGroup> getUserList() {
+    public List<UserGroup> getUserGroupList() {
         return StreamSupport
                 .stream(userGroupRepository.findAll().spliterator(), false)
                 .collect(Collectors.toList());
@@ -99,7 +100,7 @@ public class UserGroupServiceImpl implements UserGroupService {
         // Если такая операция уже есть - ошибка!
         if (userGroup.getUserOperationList().contains(operation)) {
             log.error("Ошибка добавления операции к группе - операция {} уже есть у группы {}", operation.name(), userGroup.getKey());
-            throw new MoneyKeeperException(
+            throw new MoneyKeeperIllegalArgumentException(
                     String.format("Ошибка добавления операции к группе - операция %s уже есть у группы %s", operation.name(), userGroup.getKey())
             );
         }
@@ -134,7 +135,7 @@ public class UserGroupServiceImpl implements UserGroupService {
         // Если такая операция уже есть - ошибка!
         if (!userGroup.getUserOperationList().contains(operation)) {
             log.error("Ошибка добавления операции к группе - операция {} отсутствует у группы {}", operation.name(), userGroup.getKey());
-            throw new MoneyKeeperException(
+            throw new MoneyKeeperIllegalArgumentException(
                     String.format("Ошибка добавления операции к группе - операция %s отсутствует у группы %s", operation.name(), userGroup.getKey())
             );
         }

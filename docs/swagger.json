@@ -17,12 +17,20 @@
   ],
   "tags": [
     {
+      "name": "User Group API",
+      "description": "REST API для взаимодействия с группами пользователей"
+    },
+    {
+      "name": "User API",
+      "description": "REST API для взаимодействия с пользователями"
+    },
+    {
       "name": "Transaction API",
       "description": "REST API для взаимодействия с проводками (покупками и пополнениями)"
     },
     {
       "name": "Icon API",
-      "description": "REST API для взаимодействия с икноками категорий"
+      "description": "REST API для взаимодействия с иконками категорий"
     },
     {
       "name": "Category API",
@@ -34,308 +42,18 @@
     }
   ],
   "paths": {
-    "/api/account/": {
-      "get": {
-        "tags": [
-          "Account API"
-        ],
-        "summary": "Получение списка счетов",
-        "operationId": "getAccountList",
-        "responses": {
-          "500": {
-            "description": "Ошибка при обработки запроса",
-            "content": {}
-          },
-          "400": {
-            "description": "Ошибка в запросе",
-            "content": {}
-          },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/APIError"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Недостаточно прав для запроса"
-          },
-          "200": {
-            "description": "Запрос успешно выполнен",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Account"
-                  }
-                }
-              },
-              "application/xml": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Account"
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Запрос не авторизован"
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "Account API"
-        ],
-        "summary": "Обновление информации по счету",
-        "operationId": "updatedAccount",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Account"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "500": {
-            "description": "Ошибка при обработки запроса",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/APIError"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Ошибка в запросе",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/APIError"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/APIError"
-                }
-              }
-            }
-          },
-          "201": {
-            "description": "Счет успешно обновлен"
-          },
-          "403": {
-            "description": "Недостаточно прав для запроса"
-          },
-          "401": {
-            "description": "Запрос не авторизован"
-          }
-        }
-      },
-      "post": {
-        "tags": [
-          "Account API"
-        ],
-        "summary": "Создание нового счета",
-        "operationId": "addAccount",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Account"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "500": {
-            "description": "Ошибка при обработки запроса",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/APIError"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Ошибка в запросе",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/APIError"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/APIError"
-                }
-              }
-            }
-          },
-          "201": {
-            "description": "Счет успешно создан"
-          },
-          "403": {
-            "description": "Недостаточно прав для запроса"
-          },
-          "401": {
-            "description": "Запрос не авторизован"
-          }
-        }
-      }
-    },
-    "/api/account/{accountID}": {
-      "get": {
-        "tags": [
-          "Account API"
-        ],
-        "summary": "Получение счета по идентификатору",
-        "operationId": "getAccountByID",
-        "parameters": [
-          {
-            "name": "accountID",
-            "in": "path",
-            "description": "Идентификатор счета",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            },
-            "example": 1
-          }
-        ],
-        "responses": {
-          "500": {
-            "description": "Ошибка при обработки запроса",
-            "content": {}
-          },
-          "400": {
-            "description": "Ошибка в запросе",
-            "content": {}
-          },
-          "404": {
-            "description": "Счет с таким идентификатором не найдено",
-            "content": {}
-          },
-          "403": {
-            "description": "Недостаточно прав для запроса"
-          },
-          "200": {
-            "description": "Запрос успешно выполнен",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Account"
-                }
-              },
-              "application/xml": {
-                "schema": {
-                  "$ref": "#/components/schemas/Account"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Запрос не авторизован"
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "Account API"
-        ],
-        "summary": "Удаление счета",
-        "operationId": "deleteTransaction",
-        "parameters": [
-          {
-            "name": "accountID",
-            "in": "path",
-            "description": "Идентификатор счета",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            },
-            "example": 1
-          }
-        ],
-        "responses": {
-          "500": {
-            "description": "Ошибка при обработки запроса",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/APIError"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Запрос не корректен",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/APIError"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Счета с таким идентификатором не найдено",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/APIError"
-                }
-              }
-            }
-          },
-          "200": {
-            "description": "Удаление успешно выполнено"
-          },
-          "403": {
-            "description": "Недостаточно прав для запроса"
-          },
-          "401": {
-            "description": "Запрос не авторизован"
-          }
-        }
-      }
-    },
     "/api/account/search": {
       "get": {
         "tags": [
           "Account API"
         ],
         "summary": "Получение счета по идентификатору",
-        "operationId": "getAccountByName",
+        "operationId": "getAccountByKey",
         "parameters": [
           {
-            "name": "accountName",
+            "name": "accountKey",
             "in": "query",
-            "description": "Имя счет",
+            "description": "Идентификатор счета",
             "required": true,
             "schema": {
               "type": "string"
@@ -352,12 +70,13 @@
             "description": "Ошибка в запросе",
             "content": {}
           },
+          "403": {
+            "description": "Недостаточно прав для запроса",
+            "content": {}
+          },
           "404": {
             "description": "Счет с таким идентификатором не найдено",
             "content": {}
-          },
-          "403": {
-            "description": "Недостаточно прав для запроса"
           },
           "200": {
             "description": "Запрос успешно выполнен",
@@ -370,163 +89,6 @@
               "application/xml": {
                 "schema": {
                   "$ref": "#/components/schemas/Account"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Запрос не авторизован"
-          }
-        }
-      }
-    },
-    "/api/account/info/{accountID}": {
-      "get": {
-        "tags": [
-          "Account API"
-        ],
-        "summary": "Получение агрегированной информации по счету",
-        "operationId": "getAccountInfo",
-        "parameters": [
-          {
-            "name": "accountID",
-            "in": "path",
-            "description": "Идентификатор счета",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            },
-            "example": 1
-          },
-          {
-            "name": "from",
-            "in": "query",
-            "description": "Дата начала выборки",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "date"
-            },
-            "example": "2020-01-01"
-          },
-          {
-            "name": "to",
-            "in": "query",
-            "description": "Дата завершения выборки",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "date"
-            },
-            "example": "2020-01-02"
-          }
-        ],
-        "responses": {
-          "500": {
-            "description": "Ошибка при обработки запроса",
-            "content": {}
-          },
-          "400": {
-            "description": "Ошибка в запросе",
-            "content": {}
-          },
-          "404": {
-            "description": "Счет с таким идентификатором не найдено",
-            "content": {}
-          },
-          "403": {
-            "description": "Недостаточно прав для запроса"
-          },
-          "200": {
-            "description": "Запрос успешно выполнен",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/AccountInfo"
-                }
-              },
-              "application/xml": {
-                "schema": {
-                  "$ref": "#/components/schemas/AccountInfo"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Запрос не авторизован"
-          }
-        }
-      }
-    },
-    "/api/account/info/": {
-      "get": {
-        "tags": [
-          "Account API"
-        ],
-        "summary": "Получение агрегированной информации по счету",
-        "operationId": "getAccountInfo_1",
-        "parameters": [
-          {
-            "name": "accountKey",
-            "in": "query",
-            "description": "Идентификатор счета",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "example": 1
-          },
-          {
-            "name": "from",
-            "in": "query",
-            "description": "Дата начала выборки",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "date"
-            },
-            "example": "2020-01-01"
-          },
-          {
-            "name": "to",
-            "in": "query",
-            "description": "Дата завершения выборки",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "date"
-            },
-            "example": "2020-01-02"
-          }
-        ],
-        "responses": {
-          "500": {
-            "description": "Ошибка при обработки запроса",
-            "content": {}
-          },
-          "400": {
-            "description": "Ошибка в запросе",
-            "content": {}
-          },
-          "404": {
-            "description": "Счет с таким идентификатором не найдено",
-            "content": {}
-          },
-          "403": {
-            "description": "Недостаточно прав для запроса"
-          },
-          "200": {
-            "description": "Запрос успешно выполнен",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/AccountInfo"
-                }
-              },
-              "application/xml": {
-                "schema": {
-                  "$ref": "#/components/schemas/AccountInfo"
                 }
               }
             }
@@ -542,8 +104,8 @@
         "tags": [
           "Account API"
         ],
-        "summary": "Создание нового счета по парамнтрам",
-        "operationId": "addAccount_1",
+        "summary": "Создание нового счета по параметрам",
+        "operationId": "addAccount",
         "parameters": [
           {
             "name": "key",
@@ -611,6 +173,9 @@
               }
             }
           },
+          "403": {
+            "description": "Недостаточно прав для запроса"
+          },
           "404": {
             "description": "Not Found",
             "content": {
@@ -624,8 +189,178 @@
           "201": {
             "description": "Счет успешно создан"
           },
+          "401": {
+            "description": "Запрос не авторизован"
+          }
+        }
+      }
+    },
+    "/api/account/": {
+      "get": {
+        "tags": [
+          "Account API"
+        ],
+        "summary": "Получение списка счетов",
+        "operationId": "getAccountList",
+        "responses": {
+          "500": {
+            "description": "Ошибка при обработки запроса",
+            "content": {}
+          },
+          "400": {
+            "description": "Ошибка в запросе",
+            "content": {}
+          },
+          "403": {
+            "description": "Недостаточно прав для запроса",
+            "content": {}
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Запрос успешно выполнен",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Account"
+                  }
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Account"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Запрос не авторизован"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Account API"
+        ],
+        "summary": "Обновление информации по счету",
+        "operationId": "updateAccount",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Account"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "500": {
+            "description": "Ошибка при обработки запроса",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ошибка в запросе",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            }
+          },
           "403": {
             "description": "Недостаточно прав для запроса"
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Счет успешно обновлен"
+          },
+          "401": {
+            "description": "Запрос не авторизован"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Account API"
+        ],
+        "summary": "Создание нового счета",
+        "operationId": "addAccount_1",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Account"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "500": {
+            "description": "Ошибка при обработки запроса",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ошибка в запросе",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Недостаточно прав для запроса"
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Счет успешно создан"
           },
           "401": {
             "description": "Запрос не авторизован"
@@ -633,18 +368,18 @@
         }
       }
     },
-    "/api/category/{categoryID}": {
+    "/api/account/{accountID}": {
       "get": {
         "tags": [
-          "Category API"
+          "Account API"
         ],
-        "summary": "Получение категории по идентификатору",
-        "operationId": "getCategoryByID",
+        "summary": "Получение счета по идентификатору",
+        "operationId": "getAccountByID",
         "parameters": [
           {
-            "name": "categoryID",
+            "name": "accountID",
             "in": "path",
-            "description": "Идентификатор категории",
+            "description": "Идентификатор счета",
             "required": true,
             "schema": {
               "type": "integer",
@@ -662,24 +397,25 @@
             "description": "Ошибка в запросе",
             "content": {}
           },
-          "404": {
-            "description": "Категории с таким идентификатором не найдено",
+          "403": {
+            "description": "Недостаточно прав для запроса",
             "content": {}
           },
-          "403": {
-            "description": "Недостаточно прав для запроса"
+          "404": {
+            "description": "Счет с таким идентификатором не найдено",
+            "content": {}
           },
           "200": {
             "description": "Запрос успешно выполнен",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Category"
+                  "$ref": "#/components/schemas/Account"
                 }
               },
               "application/xml": {
                 "schema": {
-                  "$ref": "#/components/schemas/Category"
+                  "$ref": "#/components/schemas/Account"
                 }
               }
             }
@@ -691,15 +427,15 @@
       },
       "delete": {
         "tags": [
-          "Category API"
+          "Account API"
         ],
-        "summary": "Удаление категории",
-        "operationId": "deleteCategory",
+        "summary": "Удаление счета",
+        "operationId": "deleteAccount",
         "parameters": [
           {
-            "name": "categoryID",
+            "name": "accountID",
             "in": "path",
-            "description": "Идентификатор категории",
+            "description": "Идентификатор счета",
             "required": true,
             "schema": {
               "type": "integer",
@@ -729,8 +465,11 @@
               }
             }
           },
+          "403": {
+            "description": "Недостаточно прав для запроса"
+          },
           "404": {
-            "description": "Категории с таким идентификатором не найдено",
+            "description": "Счета с таким идентификатором не найдено",
             "content": {
               "*/*": {
                 "schema": {
@@ -742,34 +481,52 @@
           "200": {
             "description": "Удаление успешно выполнено"
           },
-          "403": {
-            "description": "Недостаточно прав для запроса"
-          },
           "401": {
             "description": "Запрос не авторизован"
           }
         }
       }
     },
-    "/api/category/fetch/{categoryID}": {
+    "/api/account/info/{accountID}": {
       "get": {
         "tags": [
-          "Category API"
+          "Account API"
         ],
-        "summary": "Получение категории по идентификатору",
-        "description": "Кроме категории загружается еще и ее икона",
-        "operationId": "fetchCategoryByID",
+        "summary": "Получение агрегированной информации по счету",
+        "operationId": "getAccountInfo",
         "parameters": [
           {
-            "name": "categoryID",
+            "name": "accountID",
             "in": "path",
-            "description": "Идентификатор категории",
+            "description": "Идентификатор счета",
             "required": true,
             "schema": {
               "type": "integer",
               "format": "int32"
             },
             "example": 1
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "description": "Дата начала выборки",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            },
+            "example": "2020-01-01"
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "description": "Дата завершения выборки",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            },
+            "example": "2020-01-02"
           }
         ],
         "responses": {
@@ -781,24 +538,25 @@
             "description": "Ошибка в запросе",
             "content": {}
           },
-          "404": {
-            "description": "Категории с таким идентификатором не найдено",
+          "403": {
+            "description": "Недостаточно прав для запроса",
             "content": {}
           },
-          "403": {
-            "description": "Недостаточно прав для запроса"
+          "404": {
+            "description": "Счет с таким идентификатором не найдено",
+            "content": {}
           },
           "200": {
             "description": "Запрос успешно выполнен",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Category"
+                  "$ref": "#/components/schemas/AccountInfo"
                 }
               },
               "application/xml": {
                 "schema": {
-                  "$ref": "#/components/schemas/Category"
+                  "$ref": "#/components/schemas/AccountInfo"
                 }
               }
             }
@@ -809,13 +567,47 @@
         }
       }
     },
-    "/api/category/": {
+    "/api/account/info": {
       "get": {
         "tags": [
-          "Category API"
+          "Account API"
         ],
-        "summary": "Получение списка категорий",
-        "operationId": "getCategoryList",
+        "summary": "Получение агрегированной информации по счету",
+        "operationId": "getAccountInfo_1",
+        "parameters": [
+          {
+            "name": "accountKey",
+            "in": "query",
+            "description": "Идентификатор счета",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": 1
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "description": "Дата начала выборки",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            },
+            "example": "2020-01-01"
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "description": "Дата завершения выборки",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            },
+            "example": "2020-01-02"
+          }
+        ],
         "responses": {
           "500": {
             "description": "Ошибка при обработки запроса",
@@ -825,155 +617,28 @@
             "description": "Ошибка в запросе",
             "content": {}
           },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/APIError"
-                }
-              }
-            }
-          },
           "403": {
-            "description": "Недостаточно прав для запроса"
+            "description": "Недостаточно прав для запроса",
+            "content": {}
+          },
+          "404": {
+            "description": "Счет с таким идентификатором не найдено",
+            "content": {}
           },
           "200": {
             "description": "Запрос успешно выполнен",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Category"
-                  }
+                  "$ref": "#/components/schemas/AccountInfo"
                 }
               },
               "application/xml": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Category"
-                  }
+                  "$ref": "#/components/schemas/AccountInfo"
                 }
               }
             }
-          },
-          "401": {
-            "description": "Запрос не авторизован"
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "Category API"
-        ],
-        "summary": "Обновление категории",
-        "operationId": "updatedCategory",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Category"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "500": {
-            "description": "Ошибка при обработки запроса",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/APIError"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Ошибка в запросе",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/APIError"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/APIError"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Недостаточно прав для запроса"
-          },
-          "201": {
-            "description": "Категория успешно обновлена"
-          },
-          "401": {
-            "description": "Запрос не авторизован"
-          }
-        }
-      },
-      "post": {
-        "tags": [
-          "Category API"
-        ],
-        "summary": "Создание новой категории",
-        "operationId": "addCategory_1",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Category"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "500": {
-            "description": "Ошибка при обработки запроса",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/APIError"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Ошибка в запросе",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/APIError"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/APIError"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Недостаточно прав для запроса"
-          },
-          "201": {
-            "description": "Категория успешно создана"
           },
           "401": {
             "description": "Запрос не авторизован"
@@ -1051,8 +716,113 @@
               }
             }
           },
+          "403": {
+            "description": "Недостаточно прав для запроса"
+          },
           "404": {
             "description": "Not Found",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Категория успешно создана"
+          },
+          "401": {
+            "description": "Запрос не авторизован"
+          }
+        }
+      }
+    },
+    "/api/category/": {
+      "get": {
+        "tags": [
+          "Category API"
+        ],
+        "summary": "Получение списка категорий",
+        "operationId": "getCategoryList",
+        "responses": {
+          "500": {
+            "description": "Ошибка при обработки запроса",
+            "content": {}
+          },
+          "400": {
+            "description": "Ошибка в запросе",
+            "content": {}
+          },
+          "403": {
+            "description": "Недостаточно прав для запроса",
+            "content": {}
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Запрос успешно выполнен",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Category"
+                  }
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Category"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Запрос не авторизован"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Category API"
+        ],
+        "summary": "Обновление категории",
+        "operationId": "updatedCategory",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Category"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "500": {
+            "description": "Ошибка при обработки запроса",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ошибка в запросе",
             "content": {
               "*/*": {
                 "schema": {
@@ -1064,8 +834,254 @@
           "403": {
             "description": "Недостаточно прав для запроса"
           },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Категория успешно обновлена"
+          },
+          "401": {
+            "description": "Запрос не авторизован"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Category API"
+        ],
+        "summary": "Создание новой категории",
+        "operationId": "addCategory_1",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Category"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "500": {
+            "description": "Ошибка при обработки запроса",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ошибка в запросе",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Недостаточно прав для запроса"
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            }
+          },
           "201": {
             "description": "Категория успешно создана"
+          },
+          "401": {
+            "description": "Запрос не авторизован"
+          }
+        }
+      }
+    },
+    "/api/category/{categoryID}": {
+      "get": {
+        "tags": [
+          "Category API"
+        ],
+        "summary": "Получение категории по идентификатору",
+        "operationId": "getCategoryByID",
+        "parameters": [
+          {
+            "name": "categoryID",
+            "in": "path",
+            "description": "Идентификатор категории",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "500": {
+            "description": "Ошибка при обработки запроса",
+            "content": {}
+          },
+          "400": {
+            "description": "Ошибка в запросе",
+            "content": {}
+          },
+          "403": {
+            "description": "Недостаточно прав для запроса",
+            "content": {}
+          },
+          "404": {
+            "description": "Категории с таким идентификатором не найдено",
+            "content": {}
+          },
+          "200": {
+            "description": "Запрос успешно выполнен",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Category"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/Category"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Запрос не авторизован"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Category API"
+        ],
+        "summary": "Удаление категории",
+        "operationId": "deleteCategory",
+        "parameters": [
+          {
+            "name": "categoryID",
+            "in": "path",
+            "description": "Идентификатор категории",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "500": {
+            "description": "Ошибка при обработки запроса",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Запрос не корректен",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Недостаточно прав для запроса"
+          },
+          "404": {
+            "description": "Категории с таким идентификатором не найдено",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Удаление успешно выполнено"
+          },
+          "401": {
+            "description": "Запрос не авторизован"
+          }
+        }
+      }
+    },
+    "/api/category/fetch/{categoryID}": {
+      "get": {
+        "tags": [
+          "Category API"
+        ],
+        "summary": "Получение категории по идентификатору",
+        "description": "Кроме категории загружается еще и ее икона",
+        "operationId": "fetchCategoryByID",
+        "parameters": [
+          {
+            "name": "categoryID",
+            "in": "path",
+            "description": "Идентификатор категории",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "500": {
+            "description": "Ошибка при обработки запроса",
+            "content": {}
+          },
+          "400": {
+            "description": "Ошибка в запросе",
+            "content": {}
+          },
+          "403": {
+            "description": "Недостаточно прав для запроса",
+            "content": {}
+          },
+          "404": {
+            "description": "Категории с таким идентификатором не найдено",
+            "content": {}
+          },
+          "200": {
+            "description": "Запрос успешно выполнен",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Category"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/Category"
+                }
+              }
+            }
           },
           "401": {
             "description": "Запрос не авторизован"
@@ -1102,12 +1118,13 @@
             "description": "Ошибка в запросе",
             "content": {}
           },
-          "404": {
-            "description": "Икноки с таким идентификатором не найдено",
+          "403": {
+            "description": "Недостаточно прав для запроса",
             "content": {}
           },
-          "403": {
-            "description": "Недостаточно прав для запроса"
+          "404": {
+            "description": "Иконки с таким идентификатором не найдено",
+            "content": {}
           },
           "200": {
             "description": "Запрос успешно выполнен",
@@ -1164,6 +1181,9 @@
               }
             }
           },
+          "403": {
+            "description": "Недостаточно прав для запроса"
+          },
           "404": {
             "description": "Категории с таким идентификатором не найдено",
             "content": {
@@ -1176,9 +1196,6 @@
           },
           "200": {
             "description": "Удаление успешно выполнено"
-          },
-          "403": {
-            "description": "Недостаточно прав для запроса"
           },
           "401": {
             "description": "Запрос не авторизован"
@@ -1202,6 +1219,10 @@
             "description": "Ошибка в запросе",
             "content": {}
           },
+          "403": {
+            "description": "Недостаточно прав для запроса",
+            "content": {}
+          },
           "404": {
             "description": "Not Found",
             "content": {
@@ -1211,9 +1232,6 @@
                 }
               }
             }
-          },
-          "403": {
-            "description": "Недостаточно прав для запроса"
           },
           "200": {
             "description": "Запрос успешно выполнен",
@@ -1258,6 +1276,10 @@
             "description": "Ошибка в запросе",
             "content": {}
           },
+          "403": {
+            "description": "Недостаточно прав для запроса",
+            "content": {}
+          },
           "404": {
             "description": "Not Found",
             "content": {
@@ -1270,9 +1292,6 @@
           },
           "201": {
             "description": "Иконка успешно обновлена"
-          },
-          "403": {
-            "description": "Недостаточно прав для запроса"
           },
           "401": {
             "description": "Запрос не авторизован"
@@ -1309,6 +1328,10 @@
             "description": "Ошибка в запросе",
             "content": {}
           },
+          "403": {
+            "description": "Недостаточно прав для запроса",
+            "content": {}
+          },
           "404": {
             "description": "Not Found",
             "content": {
@@ -1321,9 +1344,6 @@
           },
           "201": {
             "description": "Иконка успешно создана"
-          },
-          "403": {
-            "description": "Недостаточно прав для запроса"
           },
           "401": {
             "description": "Запрос не авторизован"
@@ -1357,6 +1377,10 @@
             "description": "Ошибка в фильтре поиска",
             "content": {}
           },
+          "403": {
+            "description": "Недостаточно прав для запроса",
+            "content": {}
+          },
           "404": {
             "description": "Not Found",
             "content": {
@@ -1367,8 +1391,8 @@
               }
             }
           },
-          "403": {
-            "description": "Недостаточно прав для запроса"
+          "401": {
+            "description": "Запрос не авторизован"
           },
           "200": {
             "description": "Поиск успешно выполнен",
@@ -1390,127 +1414,6 @@
                 }
               }
             }
-          },
-          "401": {
-            "description": "Запрос не авторизован"
-          }
-        }
-      }
-    },
-    "/api/transaction/{transactionID}": {
-      "get": {
-        "tags": [
-          "Transaction API"
-        ],
-        "summary": "Получение транзакции по идентификатору",
-        "operationId": "getTransactionByID",
-        "parameters": [
-          {
-            "name": "transactionID",
-            "in": "path",
-            "description": "Идентификатор транзакции",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            },
-            "example": 1
-          }
-        ],
-        "responses": {
-          "500": {
-            "description": "Ошибка при обработки запроса",
-            "content": {}
-          },
-          "400": {
-            "description": "Ошибка в запросе",
-            "content": {}
-          },
-          "404": {
-            "description": "Транзакции с таким идентификатором не найдено",
-            "content": {}
-          },
-          "403": {
-            "description": "Недостаточно прав для запроса"
-          },
-          "200": {
-            "description": "Запрос успешно выполнен",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Transaction"
-                }
-              },
-              "application/xml": {
-                "schema": {
-                  "$ref": "#/components/schemas/Transaction"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Запрос не авторизован"
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "Transaction API"
-        ],
-        "summary": "Удаление транзакции",
-        "operationId": "deleteTransaction_1",
-        "parameters": [
-          {
-            "name": "transactionID",
-            "in": "path",
-            "description": "Идентификатор транзакции",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            },
-            "example": 1
-          }
-        ],
-        "responses": {
-          "500": {
-            "description": "Ошибка при обработки запроса",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/APIError"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Запрос не корректен",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/APIError"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Транзакции с таким идентификатором не найдено",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/APIError"
-                }
-              }
-            }
-          },
-          "200": {
-            "description": "Удаление успешно выполнено"
-          },
-          "403": {
-            "description": "Недостаточно прав для запроса"
-          },
-          "401": {
-            "description": "Запрос не авторизован"
           }
         }
       }
@@ -1521,7 +1424,7 @@
           "Transaction API"
         ],
         "summary": "Получение списка транзакции",
-        "operationId": "getTransactionList",
+        "operationId": "getTransactionList_3",
         "responses": {
           "500": {
             "description": "Ошибка при обработки запроса",
@@ -1529,6 +1432,10 @@
           },
           "400": {
             "description": "Ошибка в запросе",
+            "content": {}
+          },
+          "403": {
+            "description": "Недостаточно прав для запроса",
             "content": {}
           },
           "404": {
@@ -1540,9 +1447,6 @@
                 }
               }
             }
-          },
-          "403": {
-            "description": "Недостаточно прав для запроса"
           },
           "200": {
             "description": "Запрос успешно выполнен",
@@ -1607,6 +1511,9 @@
               }
             }
           },
+          "403": {
+            "description": "Недостаточно прав для запроса"
+          },
           "404": {
             "description": "Not Found",
             "content": {
@@ -1620,9 +1527,6 @@
           "201": {
             "description": "Транзакция успешно обновлена"
           },
-          "403": {
-            "description": "Недостаточно прав для запроса"
-          },
           "401": {
             "description": "Запрос не авторизован"
           }
@@ -1633,7 +1537,7 @@
           "Transaction API"
         ],
         "summary": "Создание новой транзакции",
-        "operationId": "addTransaction",
+        "operationId": "addTransaction_1",
         "requestBody": {
           "content": {
             "application/json": {
@@ -1665,6 +1569,9 @@
               }
             }
           },
+          "403": {
+            "description": "Недостаточно прав для запроса"
+          },
           "404": {
             "description": "Not Found",
             "content": {
@@ -1678,32 +1585,30 @@
           "201": {
             "description": "Транзакция успешно создана"
           },
-          "403": {
-            "description": "Недостаточно прав для запроса"
-          },
           "401": {
             "description": "Запрос не авторизован"
           }
         }
       }
     },
-    "/api/transaction/account/": {
+    "/api/transaction/{transactionID}": {
       "get": {
         "tags": [
           "Transaction API"
         ],
-        "summary": "Получение списка транзакции по счету",
-        "operationId": "getTransactionList_1",
+        "summary": "Получение транзакции по идентификатору",
+        "operationId": "getTransactionByID",
         "parameters": [
           {
-            "name": "accountKey",
-            "in": "query",
-            "description": "Идентификатор счета",
+            "name": "transactionID",
+            "in": "path",
+            "description": "Идентификатор транзакции",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "integer",
+              "format": "int32"
             },
-            "example": "card"
+            "example": 1
           }
         ],
         "responses": {
@@ -1715,36 +1620,25 @@
             "description": "Ошибка в запросе",
             "content": {}
           },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/APIError"
-                }
-              }
-            }
-          },
           "403": {
-            "description": "Недостаточно прав для запроса"
+            "description": "Недостаточно прав для запроса",
+            "content": {}
+          },
+          "404": {
+            "description": "Транзакции с таким идентификатором не найдено",
+            "content": {}
           },
           "200": {
             "description": "Запрос успешно выполнен",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Transaction"
-                  }
+                  "$ref": "#/components/schemas/Transaction"
                 }
               },
               "application/xml": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Transaction"
-                  }
+                  "$ref": "#/components/schemas/Transaction"
                 }
               }
             }
@@ -1753,60 +1647,39 @@
             "description": "Запрос не авторизован"
           }
         }
-      }
-    },
-    "/api/transaction/account/date": {
-      "get": {
+      },
+      "delete": {
         "tags": [
           "Transaction API"
         ],
-        "summary": "Получение списка транзакции по счету",
-        "operationId": "getTransactionList_2",
+        "summary": "Удаление транзакции",
+        "operationId": "deleteTransaction",
         "parameters": [
           {
-            "name": "accountKey",
-            "in": "query",
-            "description": "Имя счета",
+            "name": "transactionID",
+            "in": "path",
+            "description": "Идентификатор транзакции",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "integer",
+              "format": "int32"
             },
-            "example": "card"
-          },
-          {
-            "name": "dateFrom",
-            "in": "query",
-            "description": "Дата начала выборки",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "date"
-            },
-            "example": "2020-01-01"
-          },
-          {
-            "name": "dateTo",
-            "in": "query",
-            "description": "Дата завершения выборки",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "date"
-            },
-            "example": "2020-01-02"
+            "example": 1
           }
         ],
         "responses": {
           "500": {
             "description": "Ошибка при обработки запроса",
-            "content": {}
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            }
           },
           "400": {
-            "description": "Ошибка в запросе",
-            "content": {}
-          },
-          "404": {
-            "description": "Not Found",
+            "description": "Запрос не корректен",
             "content": {
               "*/*": {
                 "schema": {
@@ -1818,85 +1691,8 @@
           "403": {
             "description": "Недостаточно прав для запроса"
           },
-          "200": {
-            "description": "Запрос успешно выполнен",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Transaction"
-                  }
-                }
-              },
-              "application/xml": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Transaction"
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Запрос не авторизован"
-          }
-        }
-      }
-    },
-    "/api/transaction/account/datetime": {
-      "get": {
-        "tags": [
-          "Transaction API"
-        ],
-        "summary": "Получение списка транзакции по счету",
-        "operationId": "getTransactionList_3",
-        "parameters": [
-          {
-            "name": "accountKey",
-            "in": "query",
-            "description": "Имя счета",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "example": "card"
-          },
-          {
-            "name": "from",
-            "in": "query",
-            "description": "Дата и время начала выборки",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "date-time"
-            },
-            "example": "2020-01-01 00:00:01"
-          },
-          {
-            "name": "to",
-            "in": "query",
-            "description": "Дата и время завершения выборки",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "date-time"
-            },
-            "example": "2020-01-01 23:59:59"
-          }
-        ],
-        "responses": {
-          "500": {
-            "description": "Ошибка при обработки запроса",
-            "content": {}
-          },
-          "400": {
-            "description": "Ошибка в запросе",
-            "content": {}
-          },
           "404": {
-            "description": "Not Found",
+            "description": "Транзакции с таким идентификатором не найдено",
             "content": {
               "*/*": {
                 "schema": {
@@ -1905,29 +1701,8 @@
               }
             }
           },
-          "403": {
-            "description": "Недостаточно прав для запроса"
-          },
           "200": {
-            "description": "Запрос успешно выполнен",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Transaction"
-                  }
-                }
-              },
-              "application/xml": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Transaction"
-                  }
-                }
-              }
-            }
+            "description": "Удаление успешно выполнено"
           },
           "401": {
             "description": "Запрос не авторизован"
@@ -1941,7 +1716,7 @@
           "Transaction API"
         ],
         "summary": "Создание новой транзакции по параметрам",
-        "operationId": "addTransaction_1",
+        "operationId": "addTransaction",
         "parameters": [
           {
             "name": "processDate",
@@ -2045,6 +1820,9 @@
               }
             }
           },
+          "403": {
+            "description": "Недостаточно прав для запроса"
+          },
           "404": {
             "description": "Not Found",
             "content": {
@@ -2058,8 +1836,1298 @@
           "201": {
             "description": "Транзакция успешно создана"
           },
+          "401": {
+            "description": "Запрос не авторизован"
+          }
+        }
+      }
+    },
+    "/api/transaction/account/datetime": {
+      "get": {
+        "tags": [
+          "Transaction API"
+        ],
+        "summary": "Получение списка транзакции по счету",
+        "operationId": "getTransactionList",
+        "parameters": [
+          {
+            "name": "accountKey",
+            "in": "query",
+            "description": "Имя счета",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "card"
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "description": "Дата и время начала выборки",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "example": "2020-01-01 00:00:01"
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "description": "Дата и время завершения выборки",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "example": "2020-01-01 23:59:59"
+          }
+        ],
+        "responses": {
+          "500": {
+            "description": "Ошибка при обработки запроса",
+            "content": {}
+          },
+          "400": {
+            "description": "Ошибка в запросе",
+            "content": {}
+          },
+          "403": {
+            "description": "Недостаточно прав для запроса",
+            "content": {}
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Запрос успешно выполнен",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Transaction"
+                  }
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Transaction"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Запрос не авторизован"
+          }
+        }
+      }
+    },
+    "/api/transaction/account/date": {
+      "get": {
+        "tags": [
+          "Transaction API"
+        ],
+        "summary": "Получение списка транзакции по счету",
+        "operationId": "getTransactionList_1",
+        "parameters": [
+          {
+            "name": "accountKey",
+            "in": "query",
+            "description": "Имя счета",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "card"
+          },
+          {
+            "name": "dateFrom",
+            "in": "query",
+            "description": "Дата начала выборки",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            },
+            "example": "2020-01-01"
+          },
+          {
+            "name": "dateTo",
+            "in": "query",
+            "description": "Дата завершения выборки",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            },
+            "example": "2020-01-02"
+          }
+        ],
+        "responses": {
+          "500": {
+            "description": "Ошибка при обработки запроса",
+            "content": {}
+          },
+          "400": {
+            "description": "Ошибка в запросе",
+            "content": {}
+          },
+          "403": {
+            "description": "Недостаточно прав для запроса",
+            "content": {}
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Запрос успешно выполнен",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Transaction"
+                  }
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Transaction"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Запрос не авторизован"
+          }
+        }
+      }
+    },
+    "/api/transaction/account/": {
+      "get": {
+        "tags": [
+          "Transaction API"
+        ],
+        "summary": "Получение списка транзакции по счету",
+        "operationId": "getTransactionList_2",
+        "parameters": [
+          {
+            "name": "accountKey",
+            "in": "query",
+            "description": "Идентификатор счета",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "card"
+          }
+        ],
+        "responses": {
+          "500": {
+            "description": "Ошибка при обработки запроса",
+            "content": {}
+          },
+          "400": {
+            "description": "Ошибка в запросе",
+            "content": {}
+          },
+          "403": {
+            "description": "Недостаточно прав для запроса",
+            "content": {}
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Запрос успешно выполнен",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Transaction"
+                  }
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Transaction"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Запрос не авторизован"
+          }
+        }
+      }
+    },
+    "/api/user/": {
+      "get": {
+        "tags": [
+          "User API"
+        ],
+        "summary": "Получение списка пользователей",
+        "operationId": "getUserList",
+        "responses": {
+          "500": {
+            "description": "Ошибка при обработки запроса",
+            "content": {}
+          },
+          "400": {
+            "description": "Ошибка в запросе",
+            "content": {}
+          },
+          "403": {
+            "description": "Недостаточно прав для запроса",
+            "content": {}
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Запрос успешно выполнен",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/User"
+                  }
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/User"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Запрос не авторизован"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "User API"
+        ],
+        "summary": "Обновление пользователя",
+        "operationId": "updateUser",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "500": {
+            "description": "Ошибка при обработки запроса",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ошибка в запросе",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            }
+          },
           "403": {
             "description": "Недостаточно прав для запроса"
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Пользователь успешно обновлен"
+          },
+          "401": {
+            "description": "Запрос не авторизован"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "User API"
+        ],
+        "summary": "Создание нового пользователя",
+        "operationId": "addUser",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "500": {
+            "description": "Ошибка при обработки запроса",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ошибка в запросе",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Недостаточно прав для запроса"
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Пользователь успешно создан"
+          },
+          "401": {
+            "description": "Запрос не авторизован"
+          }
+        }
+      }
+    },
+    "/api/user/search": {
+      "get": {
+        "tags": [
+          "User API"
+        ],
+        "summary": "Получение пользователя по имени",
+        "operationId": "getUserByName",
+        "parameters": [
+          {
+            "name": "userName",
+            "in": "query",
+            "description": "Имя пользователя",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "admin"
+          }
+        ],
+        "responses": {
+          "500": {
+            "description": "Ошибка при обработки запроса",
+            "content": {}
+          },
+          "400": {
+            "description": "Ошибка в запросе",
+            "content": {}
+          },
+          "403": {
+            "description": "Недостаточно прав для запроса",
+            "content": {}
+          },
+          "404": {
+            "description": "Пользователя с таким именем не найдено",
+            "content": {}
+          },
+          "200": {
+            "description": "Запрос успешно выполнен",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Запрос не авторизован"
+          }
+        }
+      }
+    },
+    "/api/user/{userID}": {
+      "get": {
+        "tags": [
+          "User API"
+        ],
+        "summary": "Получение пользователя по идентификатору",
+        "operationId": "getUserByID",
+        "parameters": [
+          {
+            "name": "userID",
+            "in": "path",
+            "description": "Идентификатор пользователя",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "500": {
+            "description": "Ошибка при обработки запроса",
+            "content": {}
+          },
+          "400": {
+            "description": "Ошибка в запросе",
+            "content": {}
+          },
+          "403": {
+            "description": "Недостаточно прав для запроса",
+            "content": {}
+          },
+          "404": {
+            "description": "Пользователь с таким идентификатором не найден",
+            "content": {}
+          },
+          "200": {
+            "description": "Запрос успешно выполнен",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Запрос не авторизован"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "User API"
+        ],
+        "summary": "Удаление пользователя",
+        "operationId": "deleteUser",
+        "parameters": [
+          {
+            "name": "userID",
+            "in": "path",
+            "description": "Идентификатор пользователя",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "500": {
+            "description": "Ошибка при обработки запроса",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Запрос не корректен",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Недостаточно прав для запроса"
+          },
+          "404": {
+            "description": "Пользователь с таким идентификатором не найден",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Удаление успешно выполнено"
+          },
+          "401": {
+            "description": "Запрос не авторизован"
+          }
+        }
+      }
+    },
+    "/api/user/group/": {
+      "post": {
+        "tags": [
+          "User API"
+        ],
+        "summary": "Добавление пользователя в группу",
+        "operationId": "addUserToGroup",
+        "parameters": [
+          {
+            "name": "userID",
+            "in": "query",
+            "description": "Идентификатор пользователя",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "example": 1
+          },
+          {
+            "name": "userGroupID",
+            "in": "query",
+            "description": "Идентификатор группы",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "500": {
+            "description": "Ошибка при обработки запроса",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Запрос не корректен",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Недостаточно прав для запроса"
+          },
+          "404": {
+            "description": "Пользователь с таким идентификатором не найден",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Добавление успешно выполнено"
+          },
+          "401": {
+            "description": "Запрос не авторизован"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "User API"
+        ],
+        "summary": "Удаление пользователя из группы",
+        "operationId": "removeUserFromGroup",
+        "parameters": [
+          {
+            "name": "userID",
+            "in": "query",
+            "description": "Идентификатор пользователя",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "example": 1
+          },
+          {
+            "name": "userGroupID",
+            "in": "query",
+            "description": "Идентификатор группы",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "500": {
+            "description": "Ошибка при обработки запроса",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Запрос не корректен",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Недостаточно прав для запроса"
+          },
+          "404": {
+            "description": "Пользователь с таким идентификатором не найден",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Удаление успешно выполнено"
+          },
+          "401": {
+            "description": "Запрос не авторизован"
+          }
+        }
+      }
+    },
+    "/api/usergroup/search": {
+      "get": {
+        "tags": [
+          "User Group API"
+        ],
+        "summary": "Получение группы по идентификатору",
+        "operationId": "getUserGroupByKey",
+        "parameters": [
+          {
+            "name": "userGroupKey",
+            "in": "query",
+            "description": "Идентификатор группы",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "admin"
+          }
+        ],
+        "responses": {
+          "500": {
+            "description": "Ошибка при обработки запроса",
+            "content": {}
+          },
+          "400": {
+            "description": "Ошибка в запросе",
+            "content": {}
+          },
+          "403": {
+            "description": "Недостаточно прав для запроса",
+            "content": {}
+          },
+          "404": {
+            "description": "Группы с таким именем не найдено",
+            "content": {}
+          },
+          "200": {
+            "description": "Запрос успешно выполнен",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserGroup"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserGroup"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Запрос не авторизован"
+          }
+        }
+      }
+    },
+    "/api/usergroup/{userGroupID}": {
+      "get": {
+        "tags": [
+          "User Group API"
+        ],
+        "summary": "Получение группы по идентификатору",
+        "operationId": "getUserGroupByID",
+        "parameters": [
+          {
+            "name": "userGroupID",
+            "in": "path",
+            "description": "Идентификатор группы",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "500": {
+            "description": "Ошибка при обработки запроса",
+            "content": {}
+          },
+          "400": {
+            "description": "Ошибка в запросе",
+            "content": {}
+          },
+          "403": {
+            "description": "Недостаточно прав для запроса",
+            "content": {}
+          },
+          "404": {
+            "description": "Группы с таким идентификатором не найдено",
+            "content": {}
+          },
+          "200": {
+            "description": "Запрос успешно выполнен",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserGroup"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserGroup"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Запрос не авторизован"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "User Group API"
+        ],
+        "summary": "Удаление группы",
+        "operationId": "deleteUserGroup",
+        "parameters": [
+          {
+            "name": "userGroupID",
+            "in": "path",
+            "description": "Идентификатор группы",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "500": {
+            "description": "Ошибка при обработки запроса",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Запрос не корректен",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Недостаточно прав для запроса"
+          },
+          "404": {
+            "description": "Группы с таким идентификатором не найдено",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Удаление успешно выполнено"
+          },
+          "401": {
+            "description": "Запрос не авторизован"
+          }
+        }
+      }
+    },
+    "/api/usergroup/": {
+      "get": {
+        "tags": [
+          "User Group API"
+        ],
+        "summary": "Получение списка пользовательских групп",
+        "operationId": "getUserGroupList",
+        "responses": {
+          "500": {
+            "description": "Ошибка при обработки запроса",
+            "content": {}
+          },
+          "400": {
+            "description": "Ошибка в запросе",
+            "content": {}
+          },
+          "403": {
+            "description": "Недостаточно прав для запроса",
+            "content": {}
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Запрос успешно выполнен",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UserGroup"
+                  }
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UserGroup"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Запрос не авторизован"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "User Group API"
+        ],
+        "summary": "Обновление группы",
+        "operationId": "updateUserGroup",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserGroup"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "500": {
+            "description": "Ошибка при обработки запроса",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ошибка в запросе",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Недостаточно прав для запроса"
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Группа успешно обновлена"
+          },
+          "401": {
+            "description": "Запрос не авторизован"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "User Group API"
+        ],
+        "summary": "Создание новой группы",
+        "operationId": "addUserGroup",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserGroup"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "500": {
+            "description": "Ошибка при обработки запроса",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ошибка в запросе",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Недостаточно прав для запроса"
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Группа успешно создана"
+          },
+          "401": {
+            "description": "Запрос не авторизован"
+          }
+        }
+      }
+    },
+    "/api/usergroup/permission/": {
+      "post": {
+        "tags": [
+          "User Group API"
+        ],
+        "summary": "Добавление возможности совершить операцию к группе",
+        "operationId": "addPermissionToGroup",
+        "parameters": [
+          {
+            "name": "userGroupID",
+            "in": "query",
+            "description": "Идентификатор группы",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "example": 1
+          },
+          {
+            "name": "operation",
+            "in": "query",
+            "description": "Операция для добавления",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "DASHBOARD",
+                "TRANSACTION_LIST",
+                "TRANSACTION",
+                "TRANSACTION_DELETE",
+                "TRANSACTION_CHANGE",
+                "TRANSACTION_CREATE",
+                "CATEGORY",
+                "CATEGORY_DELETE",
+                "CATEGORY_CHANGE",
+                "CATEGORY_CREATE",
+                "ACCOUNT_LIST",
+                "ACCOUNT",
+                "ACCOUNT_DELETE",
+                "ACCOUNT_CHANGE",
+                "ACCOUNT_CREATE",
+                "USER_LIST",
+                "USER",
+                "USER_DELETE",
+                "USER_CHANGE",
+                "USER_CREATE",
+                "USER_GROUP_LIST",
+                "USER_GROUP",
+                "USER_GROUP_DELETE",
+                "USER_GROUP_CHANGE",
+                "USER_GROUP_CREATE"
+              ]
+            },
+            "example": "ACCOUNT_LIST"
+          }
+        ],
+        "responses": {
+          "500": {
+            "description": "Ошибка при обработки запроса",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Запрос не корректен",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Недостаточно прав для запроса"
+          },
+          "404": {
+            "description": "Группа с таким идентификатором не найден",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Добавление успешно выполнено"
+          },
+          "401": {
+            "description": "Запрос не авторизован"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "User Group API"
+        ],
+        "summary": "Удаление возможности совершить операцию к группе",
+        "operationId": "removePermissionFromGroup",
+        "parameters": [
+          {
+            "name": "userGroupID",
+            "in": "query",
+            "description": "Идентификатор группы",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "example": 1
+          },
+          {
+            "name": "operation",
+            "in": "query",
+            "description": "Операция для удаления из группы",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "DASHBOARD",
+                "TRANSACTION_LIST",
+                "TRANSACTION",
+                "TRANSACTION_DELETE",
+                "TRANSACTION_CHANGE",
+                "TRANSACTION_CREATE",
+                "CATEGORY",
+                "CATEGORY_DELETE",
+                "CATEGORY_CHANGE",
+                "CATEGORY_CREATE",
+                "ACCOUNT_LIST",
+                "ACCOUNT",
+                "ACCOUNT_DELETE",
+                "ACCOUNT_CHANGE",
+                "ACCOUNT_CREATE",
+                "USER_LIST",
+                "USER",
+                "USER_DELETE",
+                "USER_CHANGE",
+                "USER_CREATE",
+                "USER_GROUP_LIST",
+                "USER_GROUP",
+                "USER_GROUP_DELETE",
+                "USER_GROUP_CHANGE",
+                "USER_GROUP_CREATE"
+              ]
+            },
+            "example": "ACCOUNT_LIST"
+          }
+        ],
+        "responses": {
+          "500": {
+            "description": "Ошибка при обработки запроса",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Запрос не корректен",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Недостаточно прав для запроса"
+          },
+          "404": {
+            "description": "Группа с таким идентификатором не найден",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIError"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Добавление успешно выполнено"
           },
           "401": {
             "description": "Запрос не авторизован"
@@ -2134,7 +3202,7 @@
             }
           }
         },
-        "description": "Новый счет"
+        "description": "Измененный счет"
       },
       "Category": {
         "required": [
@@ -2184,7 +3252,7 @@
             }
           }
         },
-        "description": "Новая категория"
+        "description": "Измененная категория"
       },
       "Transaction": {
         "required": [
@@ -2403,6 +3471,110 @@
           }
         },
         "description": "Фильтр поиска"
+      },
+      "User": {
+        "required": [
+          "enabled",
+          "password",
+          "userGroupList",
+          "userID",
+          "username"
+        ],
+        "type": "object",
+        "properties": {
+          "userID": {
+            "type": "integer",
+            "description": "Идентификатор пользователя",
+            "format": "int32",
+            "example": 1
+          },
+          "password": {
+            "type": "string",
+            "description": "Пароль пользователя",
+            "example": "1"
+          },
+          "username": {
+            "pattern": "^[А-Яа-яЁёA-Za-z0-9 -]{0,255}$",
+            "type": "string",
+            "description": "Логин пользователя",
+            "example": "administrator"
+          },
+          "enabled": {
+            "type": "boolean",
+            "description": "Флаг активности пользователя"
+          },
+          "userGroupList": {
+            "type": "array",
+            "description": "Список групп, в которые входит пользователь",
+            "items": {
+              "$ref": "#/components/schemas/UserGroup"
+            }
+          }
+        },
+        "description": "Измененный пользователь"
+      },
+      "UserGroup": {
+        "required": [
+          "key",
+          "name",
+          "userGroupID",
+          "userOperationList"
+        ],
+        "type": "object",
+        "properties": {
+          "userGroupID": {
+            "type": "integer",
+            "description": "Идентификатор группы",
+            "format": "int32",
+            "example": 1
+          },
+          "key": {
+            "type": "string",
+            "description": "Идентификатор группы",
+            "example": "user"
+          },
+          "name": {
+            "type": "string",
+            "description": "Имя группы",
+            "example": "Пользователи"
+          },
+          "userOperationList": {
+            "type": "array",
+            "description": "Список доступных операций для этой группы",
+            "items": {
+              "type": "string",
+              "description": "Список доступных операций для этой группы",
+              "enum": [
+                "DASHBOARD",
+                "TRANSACTION_LIST",
+                "TRANSACTION",
+                "TRANSACTION_DELETE",
+                "TRANSACTION_CHANGE",
+                "TRANSACTION_CREATE",
+                "CATEGORY",
+                "CATEGORY_DELETE",
+                "CATEGORY_CHANGE",
+                "CATEGORY_CREATE",
+                "ACCOUNT_LIST",
+                "ACCOUNT",
+                "ACCOUNT_DELETE",
+                "ACCOUNT_CHANGE",
+                "ACCOUNT_CREATE",
+                "USER_LIST",
+                "USER",
+                "USER_DELETE",
+                "USER_CHANGE",
+                "USER_CREATE",
+                "USER_GROUP_LIST",
+                "USER_GROUP",
+                "USER_GROUP_DELETE",
+                "USER_GROUP_CHANGE",
+                "USER_GROUP_CREATE"
+              ]
+            }
+          }
+        },
+        "description": "Новая группа"
       }
     }
   }

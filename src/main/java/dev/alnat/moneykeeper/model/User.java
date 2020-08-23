@@ -54,7 +54,7 @@ public class User implements Serializable, UserDetails, CredentialsContainer {
 
     @JacksonXmlElementWrapper(localName = "userGroupList")
     @JacksonXmlProperty(localName = "userGroup")
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
     @JoinTable(name = "User_UserGroup",
             joinColumns = {
                 @JoinColumn(name = "userID", nullable = false, foreignKey = @ForeignKey(name = "usergroup_user_fkey"))

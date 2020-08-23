@@ -8,7 +8,6 @@ import dev.alnat.moneykeeper.service.AccountService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -101,10 +100,10 @@ public class AccountController {
             @ApiResponse(responseCode = "403", description = "Недостаточно прав для запроса"),
             @ApiResponse(responseCode = "500", description = "Ошибка при обработки запроса")
     })
-    @PreAuthorize("hasAuthority('ACCOUNT')")
+    @PreAuthorize("hasAuthority('ACCOUNT_CHANGE')")
     @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(value = "/", method = RequestMethod.PUT)
-    public void updatedAccount(
+    public void updateAccount(
             @Parameter(description = "Измененный счет", required = true)
             @RequestBody
                     Account account) {
