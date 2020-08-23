@@ -10,6 +10,8 @@ import dev.alnat.moneykeeper.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -110,6 +112,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @CacheEvict(value = "user", allEntries = true) // Сбрасываем кеш при изменениях группы
     public void addToGroup(User user, UserGroup userGroup) throws MoneyKeeperException {
         // Если пользователь уже входит в эту группу - ошибка!
         if (user.getUserGroupList().contains(userGroup)) {
@@ -154,6 +157,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @CacheEvict(value = "user", allEntries = true) // Сбрасываем кеш при изменениях группы
     public void removeFromGroup(User user, UserGroup userGroup) throws MoneyKeeperException {
         // Если пользователь не входит в эту группу - ошибка!
         if (!user.getUserGroupList().contains(userGroup)) {
@@ -167,6 +171,7 @@ public class UserServiceImpl implements UserService {
         update(user);
     }
 
+    @Cacheable(value = "user")
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
         Optional<User> u = userRepository.findByUsername(s);

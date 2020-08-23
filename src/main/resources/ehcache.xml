@@ -25,4 +25,16 @@
         </resources>
     </cache>
 
+    <!--Кеш для пользователей по имени-->
+    <cache alias="user">
+        <key-type>java.lang.String</key-type>
+        <value-type>dev.alnat.moneykeeper.model.User</value-type>
+        <expiry>
+            <ttl unit="minutes">30</ttl>
+        </expiry>
+        <resources>
+            <heap unit="entries">100</heap>
+        </resources>
+    </cache>
+
 </config>

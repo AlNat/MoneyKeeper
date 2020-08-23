@@ -9,6 +9,7 @@ import dev.alnat.moneykeeper.service.UserGroupService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -24,7 +25,7 @@ import java.util.stream.StreamSupport;
 @Service
 @Transactional
 public class UserGroupServiceImpl implements UserGroupService {
-    
+
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     private final UserGroupRepository userGroupRepository;
@@ -93,6 +94,7 @@ public class UserGroupServiceImpl implements UserGroupService {
     }
 
     @Override
+    @CacheEvict(value = "user", allEntries = true) // Сбрасываем кеш при изменениях прав у группы
     public void addPermission(UserGroup userGroup, UserOperation operation) throws MoneyKeeperException {
         // Если такая операция уже есть - ошибка!
         if (userGroup.getUserOperationList().contains(operation)) {
@@ -127,6 +129,7 @@ public class UserGroupServiceImpl implements UserGroupService {
     }
 
     @Override
+    @CacheEvict(value = "user", allEntries = true) // Сбрасываем кеш при изменениях прав у группы
     public void removePermission(UserGroup userGroup, UserOperation operation) throws MoneyKeeperException {
         // Если такая операция уже есть - ошибка!
         if (!userGroup.getUserOperationList().contains(operation)) {
