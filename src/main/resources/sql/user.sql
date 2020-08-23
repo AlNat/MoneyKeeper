@@ -1,7 +1,7 @@
 -- Инициализация групп
 INSERT INTO usergroup("key", "name")
-VALUES ('user',  'Пользователь'),
-       ('admin', 'Администратор');
+VALUES ('user',  'Пользователи'),
+       ('admin', 'Администраторы');
 
 -- Сохранения набора операций по группам
 INSERT INTO usergroup_useroperation(usergroupid, useroperation)
@@ -49,10 +49,10 @@ VALUES
 
 -- Инициализация пользователей системы
 INSERT INTO "user"(enabled, username, password)
-VALUES (TRUE, 'administrator', '$2a$10$qG4QgqcUzZiub5UCQqKZJ..Fm1jkhM8QIAi9d6/ZWEv3zVKRhEXNq'),
-       (TRUE, 'user',          '$2a$10$ZBbnxYCAWl.Os/ijHtouIOrLIe8LnCSf68REHlPBrOszaZEtukw2e');
+VALUES (TRUE, 'admin', '$2a$10$ZBbnxYCAWl.Os/ijHtouIOrLIe8LnCSf68REHlPBrOszaZEtukw2e'), -- 12345
+       (TRUE, 'user',  '$2a$10$ZBbnxYCAWl.Os/ijHtouIOrLIe8LnCSf68REHlPBrOszaZEtukw2e');
 
 -- Добавляем пользователя в группу
 INSERT INTO user_usergroup(userid, usergroupid)
-VALUES ((SELECT userid from "user" where username = 'user'),          (SELECT usergroupid from usergroup where key = 'user')),
-       ((SELECT userid from "user" where username = 'administrator'), (SELECT usergroupid from usergroup where key = 'admin'));
+VALUES ((SELECT userid from "user" where username = 'user'),  (SELECT usergroupid from usergroup where key = 'user')),
+       ((SELECT userid from "user" where username = 'admin'), (SELECT usergroupid from usergroup where key = 'admin'));

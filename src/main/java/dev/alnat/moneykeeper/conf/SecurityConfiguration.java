@@ -49,7 +49,7 @@ public class SecurityConfiguration {
 
 
     /**
-     * Конфигурация для web интерфейса
+     * Конфигурация для всех остальных endpoint
      */
     @Configuration
     public static class WebSecurityConfigurationAdapter extends WebSecurityConfigurerAdapter {
@@ -72,7 +72,6 @@ public class SecurityConfiguration {
         @Override
         protected void configure(HttpSecurity http) throws Exception {
             http
-//                    .antMatcher("/web/**")
                     .sessionManagement() // Всегда делаем сессию из 1 учетки
                         .maximumSessions(1).and()
                         .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED).and()
