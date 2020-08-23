@@ -1,0 +1,19 @@
+{
+  "userID": 12345,
+  "username": "admin",
+  "enabled": true,
+  "userGroupList": [
+    {
+      "userGroupID": 12345,
+      "key": "admin",
+      "name": "Администраторы",
+      "userOperationList": [
+        "USER_GROUP_CREATE",
+        "USER_GROUP_CHANGE",
+        "USER_GROUP_DELETE",
+        "USER_GROUP",
+        "USER_GROUP_LIST"
+      ]
+    }
+  ]
+}

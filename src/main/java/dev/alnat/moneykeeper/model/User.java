@@ -29,7 +29,7 @@ import java.util.*;
 @Entity
 @Table(name = "user")
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "userGroupID", scope = UserGroup.class)
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "userID", scope = User.class)
 @Schema(description = "Информация о конкретном пользователе")
 public class User implements Serializable, UserDetails, CredentialsContainer {
 
@@ -40,12 +40,13 @@ public class User implements Serializable, UserDetails, CredentialsContainer {
     private Integer userID;
 
     @Column(nullable = false)
-    @Schema(description = "Пароль пользователя", required = true, example = "1")
+    @Schema(description = "Пароль пользователя, зашифрованный через BCrypt", required = true, example = "$2a$10$ZBbnxYCAWl.Os/ijHtouIOrLIe8LnCSf68REHlPBrOszaZEtukw2e")
+    @JsonIgnore
     private String password;
 
     @Column(unique = true, nullable = false)
     @Pattern(regexp = "^[А-Яа-яЁёA-Za-z0-9 -]{0,255}$")
-    @Schema(description = "Логин пользователя", required = true, example = "administrator")
+    @Schema(description = "Логин пользователя", required = true, example = "admin")
     private String username;
 
     @Column(nullable = false)
