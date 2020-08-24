@@ -8,13 +8,13 @@ import dev.alnat.moneykeeper.service.AccountService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -47,6 +47,7 @@ public class AccountController {
             @ApiResponse(responseCode = "403", description = "Недостаточно прав для запроса", content = @Content),
             @ApiResponse(responseCode = "500", description = "Ошибка при обработки запроса", content = @Content)
     })
+    @PreAuthorize("hasAuthority('ACCOUNT_LIST')")
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public List<Account> getAccountList() {
         return accountService.getAccountList();
@@ -62,6 +63,7 @@ public class AccountController {
             @ApiResponse(responseCode = "403", description = "Недостаточно прав для запроса", content = @Content),
             @ApiResponse(responseCode = "500", description = "Ошибка при обработки запроса", content = @Content)
     })
+    @PreAuthorize("hasAuthority('ACCOUNT')")
     @RequestMapping(value = "/{accountID}", method = RequestMethod.GET)
     public Optional<Account> getAccountByID(
             @Parameter(description = "Идентификатор счета", required = true, example = "1")
@@ -80,12 +82,13 @@ public class AccountController {
             @ApiResponse(responseCode = "403", description = "Недостаточно прав для запроса", content = @Content),
             @ApiResponse(responseCode = "500", description = "Ошибка при обработки запроса", content = @Content)
     })
+    @PreAuthorize("hasAuthority('ACCOUNT')")
     @RequestMapping(value = "/search", method = RequestMethod.GET)
-    public Optional<Account> getAccountByName(
-            @Parameter(description = "Имя счет", required = true, example = "card")
+    public Optional<Account> getAccountByKey(
+            @Parameter(description = "Идентификатор счета", required = true, example = "card")
             @RequestParam
-                    String accountName) {
-        return accountService.getAccountByKey(accountName);
+                    String accountKey) {
+        return accountService.getAccountByKey(accountKey);
     }
 
 
@@ -97,9 +100,10 @@ public class AccountController {
             @ApiResponse(responseCode = "403", description = "Недостаточно прав для запроса"),
             @ApiResponse(responseCode = "500", description = "Ошибка при обработки запроса")
     })
+    @PreAuthorize("hasAuthority('ACCOUNT_CHANGE')")
     @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(value = "/", method = RequestMethod.PUT)
-    public void updatedAccount(
+    public void updateAccount(
             @Parameter(description = "Измененный счет", required = true)
             @RequestBody
                     Account account) {
@@ -115,6 +119,7 @@ public class AccountController {
             @ApiResponse(responseCode = "403", description = "Недостаточно прав для запроса"),
             @ApiResponse(responseCode = "500", description = "Ошибка при обработки запроса")
     })
+    @PreAuthorize("hasAuthority('ACCOUNT_CREATE')")
     @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(value = "/", method = RequestMethod.POST)
     public void addAccount(
@@ -125,7 +130,7 @@ public class AccountController {
     }
 
 
-    @Operation(summary = "Создание нового счета по парамнтрам")
+    @Operation(summary = "Создание нового счета по параметрам")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Счет успешно создан"),
             @ApiResponse(responseCode = "400", description = "Ошибка в запросе"),
@@ -133,6 +138,7 @@ public class AccountController {
             @ApiResponse(responseCode = "403", description = "Недостаточно прав для запроса"),
             @ApiResponse(responseCode = "500", description = "Ошибка при обработки запроса")
     })
+    @PreAuthorize("hasAuthority('ACCOUNT_CREATE')")
     @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(value = "/custom", method = RequestMethod.POST)
     public void addAccount(
@@ -161,8 +167,9 @@ public class AccountController {
             @ApiResponse(responseCode = "403", description = "Недостаточно прав для запроса"),
             @ApiResponse(responseCode = "500", description = "Ошибка при обработки запроса")
     })
+    @PreAuthorize("hasAuthority('ACCOUNT_DELETE')")
     @RequestMapping(value = "/{accountID}", method = RequestMethod.DELETE)
-    public void deleteTransaction(
+    public void deleteAccount(
             @Parameter(description = "Идентификатор счета", required = true, example = "1")
             @PathVariable
                     Integer accountID) {
@@ -179,7 +186,8 @@ public class AccountController {
             @ApiResponse(responseCode = "403", description = "Недостаточно прав для запроса", content = @Content),
             @ApiResponse(responseCode = "500", description = "Ошибка при обработки запроса", content = @Content)
     })
-    @RequestMapping(value = "/info/{accountID}", method = RequestMethod.GET)
+    @PreAuthorize("hasAuthority('ACCOUNT')")
+    @RequestMapping(value = "/info/{accountID}", params = "!accountKey", method = RequestMethod.GET)
     public AccountInfo getAccountInfo(
             @Parameter(description = "Идентификатор счета", required = true, example = "1")
             @PathVariable
@@ -188,8 +196,7 @@ public class AccountController {
             @RequestParam
             @DateTimeFormat(pattern = "yyyy-MM-dd")
                     LocalDate from,
-            @Parameter(description = "Дата завершения выборки", required = true, example = "2020-01-02",
-                    schema = @Schema)
+            @Parameter(description = "Дата завершения выборки", required = true, example = "2020-01-02")
             @RequestParam
             @DateTimeFormat(pattern = "yyyy-MM-dd")
                     LocalDate to) throws MoneyKeeperException {
@@ -205,7 +212,8 @@ public class AccountController {
             @ApiResponse(responseCode = "403", description = "Недостаточно прав для запроса", content = @Content),
             @ApiResponse(responseCode = "500", description = "Ошибка при обработки запроса", content = @Content)
     })
-    @RequestMapping(value = "/info/", method = RequestMethod.GET)
+    @PreAuthorize("hasAuthority('ACCOUNT')")
+    @RequestMapping(value = "/info", params = "!accountID", method = RequestMethod.GET)
     public AccountInfo getAccountInfo(
             @Parameter(description = "Идентификатор счета", required = true, example = "1")
             @RequestParam
@@ -214,8 +222,7 @@ public class AccountController {
             @RequestParam
             @DateTimeFormat(pattern = "yyyy-MM-dd")
                     LocalDate from,
-            @Parameter(description = "Дата завершения выборки", required = true, example = "2020-01-02",
-                    schema = @Schema)
+            @Parameter(description = "Дата завершения выборки", required = true, example = "2020-01-02")
             @RequestParam
             @DateTimeFormat(pattern = "yyyy-MM-dd")
                     LocalDate to) throws MoneyKeeperException {

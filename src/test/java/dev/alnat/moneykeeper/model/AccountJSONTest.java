@@ -34,7 +34,7 @@ public class AccountJSONTest {
         Account account = new Account();
 
         assertThat(this.converter.write(account))
-                .isStrictlyEqualToJson("/model/empty_account.json");
+                .isStrictlyEqualToJson("/model/account/empty_account.json");
     }
 
     @Test
@@ -44,7 +44,7 @@ public class AccountJSONTest {
         account.setAccountID(12345);
 
         assertThat(this.converter.write(account))
-                .isStrictlyEqualToJson("/model/id_fill_account.json");
+                .isStrictlyEqualToJson("/model/account/id_fill_account.json");
     }
 
     @Test
@@ -61,14 +61,14 @@ public class AccountJSONTest {
         account.setUpdated(time);
 
         assertThat(this.converter.write(account))
-                .isStrictlyEqualToJson("/model/full_fill_account.json");
+                .isStrictlyEqualToJson("/model/account/full_fill_account.json");
     }
 
 
     @Test
     @DisplayName("Тест конвертации сущности с идентификатором из JSON")
     public void testConvertFromJSONAccountWithID() throws Exception {
-        Account account = this.converter.read("/model/id_fill_account.json").getObject();
+        Account account = this.converter.read("/model/account/id_fill_account.json").getObject();
         assertEquals(12345, account.getAccountID());
     }
 

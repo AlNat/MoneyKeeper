@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -25,15 +26,19 @@ import java.util.Optional;
  * Licensed by Apache License, Version 2.0
  */
 @Tag(name = "Icon API",
-        description = "REST API для взаимодействия с икноками категорий")
+        description = "REST API для взаимодействия с иконками категорий")
 @RestController
 @RequestMapping(value = "/api/icon")
 public class IconController {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
+    private final IconService iconService;
+
     @Autowired
-    private IconService iconService;
+    public IconController(IconService iconService) {
+        this.iconService = iconService;
+    }
 
 
     @Operation(summary = "Получение списка иконок")
@@ -44,6 +49,7 @@ public class IconController {
             @ApiResponse(responseCode = "403", description = "Недостаточно прав для запроса", content = @Content),
             @ApiResponse(responseCode = "500", description = "Ошибка при обработки запроса", content = @Content)
     })
+    @PreAuthorize("hasAuthority('CATEGORY')")
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public List<Icon> getIconList() {
         return iconService.getAllIcon();
@@ -54,11 +60,12 @@ public class IconController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Запрос успешно выполнен"),
             @ApiResponse(responseCode = "400", description = "Ошибка в запросе", content = @Content),
-            @ApiResponse(responseCode = "404", description = "Икноки с таким идентификатором не найдено", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Иконки с таким идентификатором не найдено", content = @Content),
             @ApiResponse(responseCode = "401", description = "Запрос не авторизован", content = @Content),
             @ApiResponse(responseCode = "403", description = "Недостаточно прав для запроса", content = @Content),
             @ApiResponse(responseCode = "500", description = "Ошибка при обработки запроса", content = @Content)
     })
+    @PreAuthorize("hasAuthority('CATEGORY')")
     @RequestMapping(value = "/{iconID}", method = RequestMethod.GET)
     public Optional<Icon> getIconByID(
             @Parameter(description = "Идентификатор иконки", required = true, example = "1")
@@ -76,6 +83,7 @@ public class IconController {
             @ApiResponse(responseCode = "403", description = "Недостаточно прав для запроса", content = @Content),
             @ApiResponse(responseCode = "500", description = "Ошибка при обработки запроса", content = @Content)
     })
+    @PreAuthorize("hasAuthority('CATEGORY_CHANGE')")
     @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(value = "/", method = RequestMethod.PUT)
     public void updatedIcon(
@@ -94,6 +102,7 @@ public class IconController {
             @ApiResponse(responseCode = "403", description = "Недостаточно прав для запроса", content = @Content),
             @ApiResponse(responseCode = "500", description = "Ошибка при обработки запроса", content = @Content)
     })
+    @PreAuthorize("hasAuthority('CATEGORY_CREATE')")
     @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(value = "/", method = RequestMethod.POST)
     public void addIcon(
@@ -120,6 +129,7 @@ public class IconController {
             @ApiResponse(responseCode = "403", description = "Недостаточно прав для запроса"),
             @ApiResponse(responseCode = "500", description = "Ошибка при обработки запроса")
     })
+    @PreAuthorize("hasAuthority('CATEGORY_DELETE')")
     @RequestMapping(value = "/{iconID}", method = RequestMethod.DELETE)
     public void deleteIcon(
             @Parameter(description = "Идентификатор иконки", required = true, example = "1")
